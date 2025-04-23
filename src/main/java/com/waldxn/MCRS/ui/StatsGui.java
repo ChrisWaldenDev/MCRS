@@ -11,27 +11,38 @@ import org.bukkit.inventory.meta.ItemMeta;
 
 public class StatsGui {
 
-    public static void open(MCRSPlayer MCRSPlayer) {
+    public static void open(MCRSPlayer player) {
 
-        int totalLevel = 0;
-        for (Skill s: MCRSPlayer.getSkills().values()) {
-            totalLevel += s.getLevel();
-        }
+        int totalLevel = calculateTotalLevel(player);
 
-        Inventory gui = Bukkit.createInventory(null, 27, ChatUtil.color("&l" + MCRSPlayer.getName() + "'s Total Level: &2&l" + totalLevel));
+        Inventory gui = Bukkit.createInventory(null, 27, ChatUtil.color("&l" + player.getName() + "'s Total Level: &2&l" + totalLevel));
 
         int slot = 0;
-        for (SkillType skillType : SkillType.values()) {
+        for (SkillType type : SkillType.values()) {
+            // Centers the bottom row of skill icons
             while ((slot % 9 < 3 || slot % 9 > 5) && slot >= 18) slot++;
 
-            ItemStack item = new ItemStack(skillType.getIcon());
-            ItemMeta meta = item.getItemMeta();
-            meta.setDisplayName(skillType.getName());
-            meta.setLore(MCRSPlayer.getSkill(skillType).getHoverInfo());
-            item.setItemMeta(meta);
+            ItemStack item = createSkillItem(type, player.getSkill(type));
             gui.setItem(slot, item);
             slot++;
         }
-        MCRSPlayer.getBukkitPlayer().openInventory(gui);
+        player.getBukkitPlayer().openInventory(gui);
+    }
+
+    private static int calculateTotalLevel(MCRSPlayer player) {
+        int totalLevel = 0;
+        for (Skill skill : player.getSkills().values()) {
+            totalLevel += skill.getLevel();
+        }
+        return totalLevel;
+    }
+
+    private static ItemStack createSkillItem(SkillType type, Skill skill) {
+        ItemStack item = new ItemStack(type.getIcon());
+        ItemMeta meta = item.getItemMeta();
+        meta.setDisplayName(type.getName());
+        meta.setLore(skill.getHoverInfo());
+        item.setItemMeta(meta);
+        return item;
     }
 }
