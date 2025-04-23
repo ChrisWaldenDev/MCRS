@@ -1,0 +1,26 @@
+# Maven build output
+/target/
+/*.iml
+.idea/
+
+# OS-generated files
+.DS_Store
+Thumbs.db
+
+# Database files
+*.sqlite
+*.db
+*.db-journal
+
+# Plugin builds
+*.jar
+
+# Editor backups
+*.log
+*.swp
+*.tmp
+*.bak
+out/
+
+# Other files
+Todo

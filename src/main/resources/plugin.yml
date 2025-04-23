@@ -1,0 +1,13 @@
+name: MCRS
+version: ${project.version}
+main: com.waldxn.MCRS.MCRS
+api-version: '1.21'
+commands:
+  stats:
+    description: Lists player stats
+    usage: /stats [player]
+    permission: mcrs.player.stats
+  saveall:
+    description: Saves all player stats
+    usage: /saveall
+    permission: mcrs.admin.saveall
