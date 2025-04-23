@@ -63,25 +63,23 @@ public final class MCRS extends JavaPlugin {
     private void startAutoSaveTask() {
         long intervalTicks = 20L * 60 * 5; // 5 minutes in ticks (20 ticks = 1 second)
 
-        Bukkit.getScheduler().runTaskTimer(this, () -> {
-            if (!DatabaseManager.isConnected()) return;
+        if (!DatabaseManager.isConnected()) return;
 
-            Bukkit.getScheduler().runTaskAsynchronously(this, () -> {
-                int playerCount = 0;
+        Bukkit.getScheduler().runTaskTimerAsynchronously(this, () -> {
+            int playerCount = 0;
 
-                try {
-                    for (MCRSPlayer player : PlayerManager.getPlayers()) {
-                        if (player.isDirty()) {
-                            PlayerDataDAO.savePlayerSkills(player);
-                            player.clearDirty();
-                            playerCount++;
-                        }
+            try {
+                for (MCRSPlayer player : PlayerManager.getPlayers()) {
+                    if (player.isDirty()) {
+                        PlayerDataDAO.savePlayerSkills(player);
+                        player.clearDirty();
+                        playerCount++;
                     }
-                    if (playerCount > 0) getLogger().info("Auto-saved " + playerCount + " player(s) skills.");
-                } catch (Exception e) {
-                    getLogger().severe("Auto-save failed: " + e.getMessage());
                 }
-            });
-        }, intervalTicks, intervalTicks);
+                if (playerCount > 0) getLogger().info("Auto-saved " + playerCount + " player(s) skills.");
+            } catch (Exception e) {
+                getLogger().severe("Auto-save failed: " + e.getMessage());
+            }
+        },intervalTicks, intervalTicks);
     }
 }
