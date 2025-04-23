@@ -15,6 +15,7 @@ public class MCRSPlayer {
     private final HashMap<SkillType, Skill> skills = new HashMap<>();
 
     private final UUID uuid;
+    private boolean dirty = false;
 
     public MCRSPlayer(UUID uuid) {
         this.uuid = uuid;
@@ -43,7 +44,7 @@ public class MCRSPlayer {
             if (entry.getKey() != null && entry.getValue() != null) {
                 skills.put(entry.getKey(), entry.getValue());
             } else {
-                Bukkit.getLogger().warning("[MCRS] Invalid skill entry in setSkills() for " + uuid);            }
+                Bukkit.getLogger().warning("Invalid skill entry in setSkills() for " + uuid);            }
         }
     }
 
@@ -52,6 +53,18 @@ public class MCRSPlayer {
         for (SkillType type : SkillType.values()) {
             skills.put(type, SkillFactory.createSkill(type));
         }
+    }
+
+    public void markDirty() {
+        this.dirty = true;
+    }
+
+    public void clearDirty() {
+        this.dirty = false;
+    }
+
+    public boolean isDirty() {
+        return dirty;
     }
 
     public org.bukkit.entity.Player getBukkitPlayer() {

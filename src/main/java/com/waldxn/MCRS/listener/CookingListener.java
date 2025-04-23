@@ -26,7 +26,7 @@ import java.util.Set;
 
 public class CookingListener implements Listener {
 
-    private final Set<Material> COOKABLE_FOOD = EnumSet.of(
+    protected static final Set<Material> COOKABLE_FOOD = EnumSet.of(
             Material.POTATO,
             Material.KELP,
             Material.CHICKEN,
@@ -38,7 +38,7 @@ public class CookingListener implements Listener {
             Material.BEEF
     );
 
-    private final Set<Material> CRAFTABLE_FOOD = EnumSet.of(
+    protected static final Set<Material> CRAFTABLE_FOOD = EnumSet.of(
             Material.RABBIT_STEW,
             Material.BREAD,
             Material.MUSHROOM_STEW,

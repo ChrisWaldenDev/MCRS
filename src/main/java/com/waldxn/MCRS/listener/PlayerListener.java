@@ -32,9 +32,9 @@ public class PlayerListener implements Listener {
     public void onPlayerQuit(PlayerQuitEvent event) {
         UUID uuid = event.getPlayer().getUniqueId();
         MCRSPlayer player = PlayerManager.get(uuid);
-        if (player != null) {
+        if (player != null && player.isDirty()) {
             Bukkit.getScheduler().runTaskAsynchronously(MCRS.getInstance(), () -> PlayerDataDAO.savePlayerSkills(player));
-            PlayerManager.remove(uuid);
         }
+        PlayerManager.remove(uuid);
     }
 }

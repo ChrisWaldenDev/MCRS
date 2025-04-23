@@ -34,7 +34,7 @@ public final class MCRS extends JavaPlugin {
             try {
                 PlayerDataDAO.savePlayerSkills(player);
             } catch (Exception e) {
-                getLogger().severe("[MCRS] Failed to save data for " + player.getName() + ": " + e.getMessage());
+                getLogger().severe("Failed to save data for " + player.getName() + ": " + e.getMessage());
             }
         }
 
@@ -48,6 +48,7 @@ public final class MCRS extends JavaPlugin {
         pm.registerEvents(new RangedListener(), this);
         pm.registerEvents(new ConstructionListener(), this);
         pm.registerEvents(new CookingListener(), this);
+        pm.registerEvents(new CraftingListener(), this);
     }
 
     private void registerCommands() {
@@ -62,20 +63,23 @@ public final class MCRS extends JavaPlugin {
     private void startAutoSaveTask() {
         long intervalTicks = 20L * 60 * 5; // 5 minutes in ticks (20 ticks = 1 second)
 
-        Bukkit.getScheduler().runTaskTimer(this, () -> {
-            if (!DatabaseManager.isConnected()) return;
+        if (!DatabaseManager.isConnected()) return;
 
+        Bukkit.getScheduler().runTaskTimerAsynchronously(this, () -> {
             int playerCount = 0;
 
             try {
                 for (MCRSPlayer player : PlayerManager.getPlayers()) {
-                    PlayerDataDAO.savePlayerSkills(player);
-                    playerCount++;
+                    if (player.isDirty()) {
+                        PlayerDataDAO.savePlayerSkills(player);
+                        player.clearDirty();
+                        playerCount++;
+                    }
                 }
-                Bukkit.getLogger().info("[MCRS] Auto-saved " + playerCount + " player(s) skills.");
+                if (playerCount > 0) getLogger().info("Auto-saved " + playerCount + " player(s) skills.");
             } catch (Exception e) {
-                Bukkit.getLogger().severe("[MCRS] Auto-save failed: " + e.getMessage());
+                getLogger().severe("Auto-save failed: " + e.getMessage());
             }
-        }, intervalTicks, intervalTicks);
+        },intervalTicks, intervalTicks);
     }
 }

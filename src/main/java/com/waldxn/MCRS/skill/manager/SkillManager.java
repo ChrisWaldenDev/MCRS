@@ -9,13 +9,17 @@ import org.bukkit.entity.Player;
 
 public class SkillManager {
 
-    public static void giveExperience(MCRSPlayer MCRSPlayer, SkillType type, double amount) {
-        Skill skill = MCRSPlayer.getSkill(type);
+    public static void giveExperience(MCRSPlayer mcrsPlayer, SkillType type, double amount) {
+        if (amount <= 0) return;
+
+        Skill skill = mcrsPlayer.getSkill(type);
         int level = skill.getLevel();
         boolean leveledUp = skill.addExperience(amount);
         int newLevel = skill.getLevel();
 
-        Player bukkitPlayer = Bukkit.getPlayer(MCRSPlayer.getUUID());
+        mcrsPlayer.markDirty();
+
+        Player bukkitPlayer = Bukkit.getPlayer(mcrsPlayer.getUUID());
 
         if (bukkitPlayer != null) {
             BossBarManager.showXPBar(bukkitPlayer, type, skill.getExperience());
