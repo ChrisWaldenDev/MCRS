@@ -66,7 +66,8 @@ public final class MCRS extends JavaPlugin {
         Bukkit.getScheduler().runTaskTimer(this, () -> {
             if (!DatabaseManager.isConnected()) return;
 
-            int playerCount = 0;
+            Bukkit.getScheduler().runTaskAsynchronously(this, () -> {
+                int playerCount = 0;
 
                 try {
                     for (MCRSPlayer player : PlayerManager.getPlayers()) {
