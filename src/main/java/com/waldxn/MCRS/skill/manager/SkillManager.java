@@ -15,7 +15,9 @@ public class SkillManager {
         boolean leveledUp = skill.addExperience(amount);
         int newLevel = skill.getLevel();
 
-        Player bukkitPlayer = Bukkit.getPlayer(MCRSPlayer.getUUID());
+        mcrsPlayer.markDirty();
+
+        Player bukkitPlayer = Bukkit.getPlayer(mcrsPlayer.getUUID());
 
         if (bukkitPlayer != null) {
             BossBarManager.showXPBar(bukkitPlayer, type, skill.getExperience());

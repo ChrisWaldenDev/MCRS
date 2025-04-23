@@ -68,15 +68,19 @@ public final class MCRS extends JavaPlugin {
 
             int playerCount = 0;
 
-            try {
-                for (MCRSPlayer player : PlayerManager.getPlayers()) {
-                    PlayerDataDAO.savePlayerSkills(player);
-                    playerCount++;
+                try {
+                    for (MCRSPlayer player : PlayerManager.getPlayers()) {
+                        if (player.isDirty()) {
+                            PlayerDataDAO.savePlayerSkills(player);
+                            player.clearDirty();
+                            playerCount++;
+                        }
+                    }
+                    getLogger().info("[MCRS] Auto-saved " + playerCount + " player(s) skills.");
+                } catch (Exception e) {
+                    getLogger().severe("[MCRS] Auto-save failed: " + e.getMessage());
                 }
-                Bukkit.getLogger().info("[MCRS] Auto-saved " + playerCount + " player(s) skills.");
-            } catch (Exception e) {
-                Bukkit.getLogger().severe("[MCRS] Auto-save failed: " + e.getMessage());
-            }
+            });
         }, intervalTicks, intervalTicks);
     }
 }
