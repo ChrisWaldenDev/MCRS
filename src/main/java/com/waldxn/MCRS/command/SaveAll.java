@@ -26,8 +26,10 @@ public class SaveAll implements CommandExecutor {
             return true;
         }
 
+        boolean force = strings.length > 0 && strings[0].equalsIgnoreCase("--force");
+
         for (MCRSPlayer player : PlayerManager.getPlayers()) {
-            PlayerDataDAO.savePlayerSkills(player);
+            if (force || player.isDirty()) PlayerDataDAO.savePlayerSkills(player);
         }
 
         commandSender.sendMessage(ChatUtil.color("&aAll players have been saved."));
