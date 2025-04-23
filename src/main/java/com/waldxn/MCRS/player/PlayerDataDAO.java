@@ -50,7 +50,7 @@ public class PlayerDataDAO {
                     skill.setInitialExperience(xp);
                     skills.put(type, skill);
                 } catch (Exception e) {
-                    Bukkit.getLogger().warning("[MCRS] Invalid skill data for UUID " + uuid + ": " + e.getMessage());
+                    Bukkit.getLogger().warning("Invalid skill data for UUID " + uuid + ": " + e.getMessage());
                 }
             }
         } catch (SQLException e) {

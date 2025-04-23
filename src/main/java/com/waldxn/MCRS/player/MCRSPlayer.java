@@ -44,7 +44,7 @@ public class MCRSPlayer {
             if (entry.getKey() != null && entry.getValue() != null) {
                 skills.put(entry.getKey(), entry.getValue());
             } else {
-                Bukkit.getLogger().warning("[MCRS] Invalid skill entry in setSkills() for " + uuid);            }
+                Bukkit.getLogger().warning("Invalid skill entry in setSkills() for " + uuid);            }
         }
     }
 

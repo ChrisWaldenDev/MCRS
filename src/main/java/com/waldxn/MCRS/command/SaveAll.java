@@ -33,7 +33,7 @@ public class SaveAll implements CommandExecutor {
         }
 
         commandSender.sendMessage(ChatUtil.color("&aAll players have been saved."));
-        Bukkit.getLogger().info("[MCRS] /saveall triggered - all player data saved.");
+        Bukkit.getLogger().info("/saveall triggered - all player data saved.");
 
         return true;
     }
