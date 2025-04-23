@@ -47,7 +47,7 @@ public class PlayerDataDAO {
                     SkillType type = SkillType.valueOf(rs.getString("skill"));
                     double xp = rs.getDouble("experience");
                     Skill skill = SkillFactory.createSkill(type);
-                    skill.addExperience(xp); // will also recalculate level
+                    skill.setInitialExperience(xp);
                     skills.put(type, skill);
                 } catch (Exception e) {
                     Bukkit.getLogger().warning("[MCRS] Invalid skill data for UUID " + uuid + ": " + e.getMessage());
@@ -60,6 +60,12 @@ public class PlayerDataDAO {
 
         // Fill in any missing skills
         for (SkillType type : SkillType.values()) {
+            if (type == SkillType.HITPOINTS) {
+                Skill hitpoints = SkillFactory.createSkill(type);
+                hitpoints.setInitialExperience(1154);
+                skills.putIfAbsent(type, hitpoints);
+                continue;
+            }
             skills.putIfAbsent(type, SkillFactory.createSkill(type));
         }
 

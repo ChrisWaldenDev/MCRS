@@ -14,10 +14,6 @@ public abstract class Skill {
         this.type = type;
         this.experience = 0;
         this.level = 1;
-        if (type == SkillType.HITPOINTS) {
-            this.level = 10;
-            this.experience = 1154;
-        }
     }
 
     public String getName() {
@@ -58,5 +54,10 @@ public abstract class Skill {
                 ChatUtil.color("&6Level: " + level),
                 ChatUtil.color("&eXP: " + (int)(experience - currentLevelExperience) + " / " + neededExperience)
         );
+    }
+
+    public void setInitialExperience(double experience) {
+        this.experience = experience;
+        this.level = ExperienceUtil.getLevelForXP(experience);
     }
 }
