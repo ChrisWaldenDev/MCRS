@@ -77,7 +77,7 @@ public final class MCRS extends JavaPlugin {
                             playerCount++;
                         }
                     }
-                    getLogger().info("[MCRS] Auto-saved " + playerCount + " player(s) skills.");
+                    if (playerCount > 0) getLogger().info("[MCRS] Auto-saved " + playerCount + " player(s) skills.");
                 } catch (Exception e) {
                     getLogger().severe("[MCRS] Auto-save failed: " + e.getMessage());
                 }
