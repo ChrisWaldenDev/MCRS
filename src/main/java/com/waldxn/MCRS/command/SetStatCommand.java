@@ -34,7 +34,7 @@ public class SetStatCommand implements CommandExecutor, TabCompleter {
             return true;
         }
 
-        if (strings.length < 3) return false;
+        if (strings.length != 3) return false;
 
         String playerName = strings[0];
         String skillName = strings[1];

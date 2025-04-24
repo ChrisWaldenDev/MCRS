@@ -61,6 +61,12 @@ public class MCRSPlayer {
     // Utility method to reset skills
     public void initializeSkills() {
         for (SkillType type : SkillType.values()) {
+            if (type == SkillType.HITPOINTS) {
+                Skill hitpoints = SkillFactory.createSkill(type);
+                hitpoints.setInitialExperience(1154);
+                skills.put(type, hitpoints);
+                continue;
+            }
             skills.put(type, SkillFactory.createSkill(type));
         }
     }
