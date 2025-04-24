@@ -10,7 +10,7 @@ import org.bukkit.event.inventory.InventoryDragEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 
-public class StatsClickListener implements Listener {
+public class GuiClickListener implements Listener {
 
     @EventHandler
     public void onInventoryClick(InventoryClickEvent event) {
@@ -37,12 +37,6 @@ public class StatsClickListener implements Listener {
                 }
             }
         }
-
-        ItemStack clicked = event.getCurrentItem();
-        if (clicked == null || !clicked.hasItemMeta()) return;
-
-        String skillName = ChatColor.stripColor(clicked.getItemMeta().getDisplayName());
-        player.sendMessage("You clicked on: " + skillName); // TODO: Add chat message with ranks and levels - if not wanted, delete code up to event.setCancelled();
     }
 
     @EventHandler
