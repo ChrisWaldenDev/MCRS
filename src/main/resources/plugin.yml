@@ -7,6 +7,10 @@ commands:
     description: Lists player stats
     usage: /stats [player]
     permission: mcrs.player.stats
+  leaderboard:
+    description: Displays the leaderboard
+    usage: /leaderboard [skill]
+    permission: mcrs.player.leaderboard
   saveall:
     description: Saves all player stats
     usage: /saveall

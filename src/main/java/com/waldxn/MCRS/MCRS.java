@@ -1,9 +1,7 @@
 package com.waldxn.MCRS;
 
-import com.waldxn.MCRS.command.SaveAllCommand;
-import com.waldxn.MCRS.command.SetStatCommand;
-import com.waldxn.MCRS.command.StatsCommand;
-import com.waldxn.MCRS.command.WipeStatsCommand;
+import com.waldxn.MCRS.cache.LeaderboardCache;
+import com.waldxn.MCRS.command.*;
 import com.waldxn.MCRS.listener.*;
 import com.waldxn.MCRS.player.MCRSPlayer;
 import com.waldxn.MCRS.player.PlayerDataDAO;
@@ -27,7 +25,7 @@ public final class MCRS extends JavaPlugin {
         registerEvents();
         registerCommands();
 
-        startAutoSaveTask();
+        schedulePlayerSync();
     }
 
     @Override
@@ -52,7 +50,7 @@ public final class MCRS extends JavaPlugin {
         pm.registerEvents(new ConstructionListener(), this);
         pm.registerEvents(new CookingListener(), this);
         pm.registerEvents(new CraftingListener(), this);
-        pm.registerEvents(new StatsClickListener(), this);
+        pm.registerEvents(new GuiClickListener(), this);
         pm.registerEvents(new FarmingListener(), this);
     }
 
@@ -63,13 +61,14 @@ public final class MCRS extends JavaPlugin {
         getCommand("setstat").setExecutor(setStatCommand);
         getCommand("setstat").setTabCompleter(setStatCommand);
         getCommand("wipestats").setExecutor(new WipeStatsCommand());
+        getCommand("leaderboard").setExecutor(new LeaderboardCommand());
     }
 
     public static MCRS getInstance() {
         return getPlugin(MCRS.class);
     }
 
-    private void startAutoSaveTask() {
+    private void schedulePlayerSync() {
         long intervalTicks = 20L * 60 * 5; // 5 minutes in ticks (20 ticks = 1 second)
 
         if (!DatabaseManager.isConnected()) return;
@@ -85,7 +84,12 @@ public final class MCRS extends JavaPlugin {
                         playerCount++;
                     }
                 }
-                if (playerCount > 0) LogUtil.info("Auto-saved " + playerCount + " player(s) skills.");
+                if (playerCount > 0) {
+                    LogUtil.info("Auto-saved " + playerCount + " player(s) skills.");
+
+                    LeaderboardCache.refresh();
+                    LogUtil.info("Leaderboard cache refreshed.");
+                }
             } catch (Exception e) {
                 LogUtil.severe("Auto-save failed: " + e.getMessage());
             }
