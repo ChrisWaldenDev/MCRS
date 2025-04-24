@@ -12,12 +12,18 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 
+import static com.waldxn.MCRS.util.MaterialGroups.FARMABLE_BLOCKS;
+import static com.waldxn.MCRS.util.MaterialGroups.STACKED_FARMABLE_BLOCKS;
+
 public class ConstructionListener implements Listener {
 
     private final Map<UUID, Long> lastXP = new HashMap<>();
 
     @EventHandler
     public void onPlayerBuild(BlockPlaceEvent event) {
+        // Doesn't give XP for placing farmable blocks
+        if (FARMABLE_BLOCKS.contains(event.getBlock().getType()) || STACKED_FARMABLE_BLOCKS.contains(event.getBlock().getType())) return;
+
         UUID uuid = event.getPlayer().getUniqueId();
         long now = System.currentTimeMillis();
         long last = lastXP.getOrDefault(uuid, 0L);

@@ -50,6 +50,7 @@ public final class MCRS extends JavaPlugin {
         pm.registerEvents(new CookingListener(), this);
         pm.registerEvents(new CraftingListener(), this);
         pm.registerEvents(new StatsClickListener(), this);
+        pm.registerEvents(new FarmingListener(), this);
     }
 
     private void registerCommands() {
