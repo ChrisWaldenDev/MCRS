@@ -8,6 +8,7 @@ import com.waldxn.MCRS.player.MCRSPlayer;
 import com.waldxn.MCRS.player.PlayerDataDAO;
 import com.waldxn.MCRS.player.PlayerManager;
 import com.waldxn.MCRS.skill.manager.DatabaseManager;
+import com.waldxn.MCRS.util.LogUtil;
 import org.bukkit.Bukkit;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -35,7 +36,7 @@ public final class MCRS extends JavaPlugin {
             try {
                 PlayerDataDAO.savePlayerSkills(player);
             } catch (Exception e) {
-                getLogger().severe("Failed to save data for " + player.getName() + ": " + e.getMessage());
+                LogUtil.severe("Failed to save data for " + player.getName() + ": " + e.getMessage());
             }
         }
 
@@ -82,9 +83,9 @@ public final class MCRS extends JavaPlugin {
                         playerCount++;
                     }
                 }
-                if (playerCount > 0) getLogger().info("Auto-saved " + playerCount + " player(s) skills.");
+                if (playerCount > 0) LogUtil.info("Auto-saved " + playerCount + " player(s) skills.");
             } catch (Exception e) {
-                getLogger().severe("Auto-save failed: " + e.getMessage());
+                LogUtil.severe("Auto-save failed: " + e.getMessage());
             }
         },intervalTicks, intervalTicks);
     }

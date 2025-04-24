@@ -1,7 +1,7 @@
 package com.waldxn.MCRS.skill.manager;
 
 import com.waldxn.MCRS.MCRS;
-import org.bukkit.Bukkit;
+import com.waldxn.MCRS.util.LogUtil;
 
 import java.io.File;
 import java.sql.Connection;
@@ -23,7 +23,7 @@ public class DatabaseManager {
             if (!folder.exists()) {
                 boolean created = folder.mkdirs();
                 if (!created) {
-                    Bukkit.getLogger().severe("Couldn't create folder " + folder.getAbsolutePath());
+                    LogUtil.severe( "Couldn't create folder " + folder.getAbsolutePath());
                 }
             }
 
@@ -36,7 +36,7 @@ public class DatabaseManager {
             }
 
         } catch (SQLException e) {
-            Bukkit.getLogger().severe("Database connection or table creation failed");
+            LogUtil.severe("Database connection or table creation failed");
             e.printStackTrace();
         }
     }
