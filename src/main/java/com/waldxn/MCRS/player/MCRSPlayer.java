@@ -5,7 +5,6 @@ import com.waldxn.MCRS.skill.core.SkillFactory;
 import com.waldxn.MCRS.skill.core.SkillType;
 import org.bukkit.Bukkit;
 
-
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
@@ -45,6 +44,15 @@ public class MCRSPlayer {
                 skills.put(entry.getKey(), entry.getValue());
             } else {
                 Bukkit.getLogger().warning("Invalid skill entry in setSkills() for " + uuid);            }
+        }
+    }
+
+    public void setSkillLevel(SkillType type, int level) {
+        Skill skill = skills.get(type);
+        if (skill != null) {
+            skill.setLevel(level);
+        } else {
+            Bukkit.getLogger().warning("Attempted to set level for non-existent skill: " + type);
         }
     }
 

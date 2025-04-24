@@ -11,3 +11,7 @@ commands:
     description: Saves all player stats
     usage: /saveall
     permission: mcrs.admin.saveall
+  setstat:
+    description: Sets a player's stat
+    usage: /setstat <player> <stat> <value>
+    permission: mcrs.admin.setstat

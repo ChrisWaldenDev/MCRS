@@ -10,7 +10,7 @@ import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 
-public class SaveAll implements CommandExecutor {
+public class SaveAllCommand implements CommandExecutor {
 
     @SuppressWarnings("NullableProblems")
     @Override

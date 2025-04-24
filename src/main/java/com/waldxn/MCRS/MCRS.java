@@ -1,6 +1,7 @@
 package com.waldxn.MCRS;
 
-import com.waldxn.MCRS.command.SaveAll;
+import com.waldxn.MCRS.command.SaveAllCommand;
+import com.waldxn.MCRS.command.SetStatCommand;
 import com.waldxn.MCRS.command.StatsCommand;
 import com.waldxn.MCRS.listener.*;
 import com.waldxn.MCRS.player.MCRSPlayer;
@@ -54,8 +55,11 @@ public final class MCRS extends JavaPlugin {
     }
 
     private void registerCommands() {
-        this.getCommand("stats").setExecutor(new StatsCommand());
-        this.getCommand("saveall").setExecutor(new SaveAll());
+        SetStatCommand setStatCommand = new SetStatCommand();
+        getCommand("stats").setExecutor(new StatsCommand());
+        getCommand("saveall").setExecutor(new SaveAllCommand());
+        getCommand("setstat").setExecutor(setStatCommand);
+        getCommand("setstat").setTabCompleter(setStatCommand);
     }
 
     public static MCRS getInstance() {
