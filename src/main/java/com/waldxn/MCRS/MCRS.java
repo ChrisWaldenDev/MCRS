@@ -25,6 +25,7 @@ public final class MCRS extends JavaPlugin {
         registerEvents();
         registerCommands();
 
+        LeaderboardCache.refresh();
         schedulePlayerSync();
     }
 

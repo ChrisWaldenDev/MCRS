@@ -33,18 +33,16 @@ public class LeaderboardGui {
         // Adds the top players to the leaderboard
         for (int i = 0; i < Math.min(maxEntries, leaderboard.size()); i++) {
             Map.Entry<MCRSPlayer, Double> entry = leaderboard.get(i);
-            gui.setItem(i, createLeaderboardItem(entry.getKey(), entry.getValue(), i + 1, skillType));
+            gui.setItem(i, createLeaderboardItem(entry.getKey(), i + 1, skillType));
         }
 
         if (leaderboard.size() < totalSlots) {
-            gui.setItem(totalSlots - 1, createLeaderboardItem(player,
-                    skillType == null ? getTotalXP(player) :
-                            player.getSkill(skillType).getExperience(), 0, skillType));
+            gui.setItem(totalSlots - 1, createLeaderboardItem(player,0, skillType));
         }
         player.getBukkitPlayer().openInventory(gui);
     }
 
-    private static ItemStack createLeaderboardItem(MCRSPlayer player, double xp, int rank, @Nullable SkillType skillType) {
+    private static ItemStack createLeaderboardItem(MCRSPlayer player, int rank, @Nullable SkillType skillType) {
         ItemStack skull = new ItemStack(Material.PLAYER_HEAD);
         SkullMeta meta = (SkullMeta) skull.getItemMeta();
 
@@ -52,13 +50,16 @@ public class LeaderboardGui {
         meta.setDisplayName(ChatUtil.color(rankDisplay + "&a" + player.getName()));
 
         List<String> lore = new java.util.ArrayList<>();
+
         lore.add(ChatUtil.color("&7Level: " + (skillType != null
                 ? player.getSkill(skillType).getLevel()
                 : getTotalLevel(player))));
 
-        if (skillType != null || rank > 0) {
-            lore.add(ChatUtil.color("&7XP: " + (int) xp));
-        }
+        lore.add(ChatUtil.color("&7XP: " + (int) (
+                skillType != null
+                        ? player.getSkill(skillType).getExperience()
+                        : getTotalXP(player)
+        )));
 
         meta.setLore(lore);
         meta.setOwningPlayer(Bukkit.getOfflinePlayer(player.getUUID()));

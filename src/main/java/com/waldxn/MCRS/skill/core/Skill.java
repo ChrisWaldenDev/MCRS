@@ -44,16 +44,19 @@ public abstract class Skill {
         return leveledUp;
     }
 
-    protected double getExperienceToLevelUp() {
-        return ExperienceUtil.getXPForLevel(level + 1) - ExperienceUtil.getXPForLevel(level);
-    }
-
     public List<String> getHoverInfo() {
         int level = getLevel();
         double experience = getExperience();
         double nextLevelExperience = ExperienceUtil.getXPForLevel(level + 1);
         double currentLevelExperience = ExperienceUtil.getXPForLevel(level);
         int neededExperience = (int) (nextLevelExperience - currentLevelExperience);
+
+        if (level == 99) {
+            return List.of(
+                    ChatUtil.color("&6Level: " + level),
+                    ChatUtil.color("&eXP: " + (int) experience)
+            );
+        }
 
         return List.of(
                 ChatUtil.color("&6Level: " + level),
