@@ -10,12 +10,14 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.CraftItemEvent;
 import org.bukkit.inventory.*;
 
+import static com.waldxn.MCRS.util.MaterialGroups.CRAFTABLE_FOOD;
+
 public class CraftingListener implements Listener {
 
     @EventHandler
     public void onPlayerCraft(CraftItemEvent event) {
         // Check if the item is a food item -- Avoids crafting XP where cooking xp is rewarded
-        if (CookingListener.CRAFTABLE_FOOD.contains(event.getRecipe().getResult().getType())) return;
+        if (CRAFTABLE_FOOD.contains(event.getRecipe().getResult().getType())) return;
 
         if (!(event.getWhoClicked() instanceof Player bukkitPlayer)) return;
 

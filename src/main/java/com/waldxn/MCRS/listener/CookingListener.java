@@ -20,37 +20,12 @@ import org.bukkit.event.inventory.CraftItemEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.*;
 
-import java.util.EnumSet;
 import java.util.HashMap;
-import java.util.Set;
+
+import static com.waldxn.MCRS.util.MaterialGroups.COOKABLE_FOOD;
+import static com.waldxn.MCRS.util.MaterialGroups.CRAFTABLE_FOOD;
 
 public class CookingListener implements Listener {
-
-    protected static final Set<Material> COOKABLE_FOOD = EnumSet.of(
-            Material.POTATO,
-            Material.KELP,
-            Material.CHICKEN,
-            Material.COD,
-            Material.MUTTON,
-            Material.PORKCHOP,
-            Material.RABBIT,
-            Material.SALMON,
-            Material.BEEF
-    );
-
-    protected static final Set<Material> CRAFTABLE_FOOD = EnumSet.of(
-            Material.RABBIT_STEW,
-            Material.BREAD,
-            Material.MUSHROOM_STEW,
-            Material.COOKIE,
-            Material.PUMPKIN_PIE,
-            Material.BEETROOT_SOUP,
-            Material.SUSPICIOUS_STEW,
-            Material.HONEY_BOTTLE,
-            Material.CAKE,
-            Material.GOLDEN_CARROT,
-            Material.GOLDEN_APPLE
-    );
 
     private final HashMap<Location, Player> cooking = new HashMap<>();
 
