@@ -19,7 +19,9 @@ import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
+@SuppressWarnings("NullableProblems")
 public class SetStatCommand implements CommandExecutor, TabCompleter {
+
     @Override
     public boolean onCommand(CommandSender commandSender, Command command, String s, String[] strings) {
         if (!commandSender.hasPermission("mcrs.admin.setstat")) {
