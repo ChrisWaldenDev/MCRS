@@ -44,25 +44,27 @@ public final class MCRS extends JavaPlugin {
     }
 
     private void registerEvents() {
+        // Core Listeners
         pm.registerEvents(new PlayerListener(), this);
+        pm.registerEvents(new GuiClickListener(), this);
+        // Skill Listeners
         pm.registerEvents(new AgilityListener(), this);
         pm.registerEvents(new MeleeListener(), this);
         pm.registerEvents(new RangedListener(), this);
         pm.registerEvents(new ConstructionListener(), this);
         pm.registerEvents(new CookingListener(), this);
         pm.registerEvents(new CraftingListener(), this);
-        pm.registerEvents(new GuiClickListener(), this);
         pm.registerEvents(new FarmingListener(), this);
         pm.registerEvents(new FishingListener(), this);
     }
 
     private void registerCommands() {
-        SetStatCommand setStatCommand = new SetStatCommand();
-        getCommand("stats").setExecutor(new StatsCommand());
+        SetSkillCommand setSkillCommand = new SetSkillCommand();
+        getCommand("skills").setExecutor(new SkillsCommand());
         getCommand("saveall").setExecutor(new SaveAllCommand());
-        getCommand("setstat").setExecutor(setStatCommand);
-        getCommand("setstat").setTabCompleter(setStatCommand);
-        getCommand("wipestats").setExecutor(new WipeStatsCommand());
+        getCommand("setskill").setExecutor(setSkillCommand);
+        getCommand("setskill").setTabCompleter(setSkillCommand);
+        getCommand("wipeskills").setExecutor(new WipeSkillsCommand());
         getCommand("leaderboard").setExecutor(new LeaderboardCommand());
     }
 
