@@ -1,12 +1,13 @@
 package com.waldxn.MCRS;
 
-import com.waldxn.MCRS.command.SaveAll;
-import com.waldxn.MCRS.command.StatsCommand;
+import com.waldxn.MCRS.cache.LeaderboardCache;
+import com.waldxn.MCRS.command.*;
 import com.waldxn.MCRS.listener.*;
 import com.waldxn.MCRS.player.MCRSPlayer;
 import com.waldxn.MCRS.player.PlayerDataDAO;
 import com.waldxn.MCRS.player.PlayerManager;
 import com.waldxn.MCRS.skill.manager.DatabaseManager;
+import com.waldxn.MCRS.util.LogUtil;
 import org.bukkit.Bukkit;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -24,7 +25,8 @@ public final class MCRS extends JavaPlugin {
         registerEvents();
         registerCommands();
 
-        startAutoSaveTask();
+        LeaderboardCache.refresh();
+        schedulePlayerSync();
     }
 
     @Override
@@ -34,7 +36,7 @@ public final class MCRS extends JavaPlugin {
             try {
                 PlayerDataDAO.savePlayerSkills(player);
             } catch (Exception e) {
-                getLogger().severe("Failed to save data for " + player.getName() + ": " + e.getMessage());
+                LogUtil.severe("Failed to save data for " + player.getName() + ": " + e.getMessage());
             }
         }
 
@@ -42,27 +44,35 @@ public final class MCRS extends JavaPlugin {
     }
 
     private void registerEvents() {
+        // Core Listeners
         pm.registerEvents(new PlayerListener(), this);
+        pm.registerEvents(new GuiClickListener(), this);
+        // Skill Listeners
         pm.registerEvents(new AgilityListener(), this);
         pm.registerEvents(new MeleeListener(), this);
         pm.registerEvents(new RangedListener(), this);
         pm.registerEvents(new ConstructionListener(), this);
         pm.registerEvents(new CookingListener(), this);
         pm.registerEvents(new CraftingListener(), this);
-        pm.registerEvents(new StatsClickListener(), this);
         pm.registerEvents(new FarmingListener(), this);
+        pm.registerEvents(new FishingListener(), this);
     }
 
     private void registerCommands() {
-        this.getCommand("stats").setExecutor(new StatsCommand());
-        this.getCommand("saveall").setExecutor(new SaveAll());
+        SetSkillCommand setSkillCommand = new SetSkillCommand();
+        getCommand("skills").setExecutor(new SkillsCommand());
+        getCommand("saveall").setExecutor(new SaveAllCommand());
+        getCommand("setskill").setExecutor(setSkillCommand);
+        getCommand("setskill").setTabCompleter(setSkillCommand);
+        getCommand("wipeskills").setExecutor(new WipeSkillsCommand());
+        getCommand("leaderboard").setExecutor(new LeaderboardCommand());
     }
 
     public static MCRS getInstance() {
         return getPlugin(MCRS.class);
     }
 
-    private void startAutoSaveTask() {
+    private void schedulePlayerSync() {
         long intervalTicks = 20L * 60 * 5; // 5 minutes in ticks (20 ticks = 1 second)
 
         if (!DatabaseManager.isConnected()) return;
@@ -78,9 +88,14 @@ public final class MCRS extends JavaPlugin {
                         playerCount++;
                     }
                 }
-                if (playerCount > 0) getLogger().info("Auto-saved " + playerCount + " player(s) skills.");
+                if (playerCount > 0) {
+                    LogUtil.info("Auto-saved " + playerCount + " player(s) skills.");
+
+                    LeaderboardCache.refresh();
+                    LogUtil.info("Leaderboard cache refreshed.");
+                }
             } catch (Exception e) {
-                getLogger().severe("Auto-save failed: " + e.getMessage());
+                LogUtil.severe("Auto-save failed: " + e.getMessage());
             }
         },intervalTicks, intervalTicks);
     }

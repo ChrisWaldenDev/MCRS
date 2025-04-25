@@ -4,12 +4,13 @@ import com.waldxn.MCRS.skill.core.Skill;
 import com.waldxn.MCRS.skill.core.SkillFactory;
 import com.waldxn.MCRS.skill.core.SkillType;
 import com.waldxn.MCRS.skill.manager.DatabaseManager;
-import org.bukkit.Bukkit;
+import com.waldxn.MCRS.util.LogUtil;
 
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
@@ -28,7 +29,7 @@ public class PlayerDataDAO {
             }
             ps.executeBatch();
         } catch (SQLException e) {
-            Bukkit.getLogger().severe("Failed to save player: " + player.getName() + ": " + e.getMessage());
+            LogUtil.severe("Failed to save player: " + player.getName() + ": " + e.getMessage());
         }
     }
 
@@ -50,11 +51,11 @@ public class PlayerDataDAO {
                     skill.setInitialExperience(xp);
                     skills.put(type, skill);
                 } catch (Exception e) {
-                    Bukkit.getLogger().warning("Invalid skill data for UUID " + uuid + ": " + e.getMessage());
+                    LogUtil.warning("Invalid skill data for UUID " + uuid + ": " + e.getMessage());
                 }
             }
         } catch (SQLException e) {
-            Bukkit.getLogger().severe("Failed to load player: " + player.getName());
+            LogUtil.severe("Failed to load player: " + player.getName());
             e.printStackTrace();
         }
 
@@ -71,5 +72,57 @@ public class PlayerDataDAO {
 
         player.setSkills(skills);
         return player;
+    }
+
+    public static List<Map.Entry<MCRSPlayer, Double>> getLeaderboard(SkillType skillType) {
+        Map<UUID, Double> xpMap = new HashMap<>();
+
+        try (PreparedStatement ps = DatabaseManager.getConnection().prepareStatement(
+                "SELECT uuid, experience FROM player_skills WHERE skill = ?")) {
+
+            ps.setString(1, skillType.name());
+            ResultSet rs = ps.executeQuery();
+
+            while (rs.next()) {
+                UUID uuid = UUID.fromString(rs.getString("uuid"));
+                double xp = rs.getDouble("experience");
+                xpMap.put(uuid, xp);
+            }
+        } catch (SQLException e) {
+            LogUtil.severe("Failed to load leaderboard for skill: " + skillType.name() + ": " + e.getMessage());
+            e.printStackTrace();
+        }
+
+        // Convert UUID to MCRSPlayer and sort
+        return xpMap.entrySet().stream()
+                .map(entry -> Map.entry(PlayerManager.getOrLoad(entry.getKey()), entry.getValue()))
+                .filter(entry -> entry.getKey() != null)
+                .sorted((e1, e2) -> Double.compare(e2.getValue(), e1.getValue())) // Descending
+                .toList();
+    }
+
+    public static List<Map.Entry<MCRSPlayer, Double>> getTotalXPLeaderboard() {
+        Map<UUID, Double> uuidXpMap = new HashMap<>();
+
+        try (PreparedStatement ps = DatabaseManager.getConnection().prepareStatement(
+                "SELECT uuid, SUM(experience) AS total_xp FROM player_skills GROUP BY uuid")) {
+
+            ResultSet rs = ps.executeQuery();
+
+            while (rs.next()) {
+                UUID uuid = UUID.fromString(rs.getString("uuid"));
+                double totalXp = rs.getDouble("total_xp");
+                uuidXpMap.put(uuid, totalXp);
+            }
+        } catch (SQLException e) {
+            LogUtil.severe("Failed to load total XP leaderboard: " + e.getMessage());
+            e.printStackTrace();
+        }
+
+        return uuidXpMap.entrySet().stream()
+                .map(entry -> Map.entry(PlayerManager.getOrLoad(entry.getKey()), entry.getValue()))
+                .filter(entry -> entry.getKey() != null)
+                .sorted((e1, e2) -> Double.compare(e2.getValue(), e1.getValue()))
+                .toList();
     }
 }

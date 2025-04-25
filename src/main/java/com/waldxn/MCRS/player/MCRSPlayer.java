@@ -3,8 +3,8 @@ package com.waldxn.MCRS.player;
 import com.waldxn.MCRS.skill.core.Skill;
 import com.waldxn.MCRS.skill.core.SkillFactory;
 import com.waldxn.MCRS.skill.core.SkillType;
+import com.waldxn.MCRS.util.LogUtil;
 import org.bukkit.Bukkit;
-
 
 import java.util.HashMap;
 import java.util.Map;
@@ -44,13 +44,29 @@ public class MCRSPlayer {
             if (entry.getKey() != null && entry.getValue() != null) {
                 skills.put(entry.getKey(), entry.getValue());
             } else {
-                Bukkit.getLogger().warning("Invalid skill entry in setSkills() for " + uuid);            }
+                LogUtil.warning( "Invalid skill entry in setSkills() for " + uuid);
+            }
+        }
+    }
+
+    public void setSkillLevel(SkillType type, int level) {
+        Skill skill = skills.get(type);
+        if (skill != null) {
+            skill.setLevel(level);
+        } else {
+            LogUtil.warning("Attempted to set level for non-existent skill: " + type);
         }
     }
 
     // Utility method to reset skills
     public void initializeSkills() {
         for (SkillType type : SkillType.values()) {
+            if (type == SkillType.HITPOINTS) {
+                Skill hitpoints = SkillFactory.createSkill(type);
+                hitpoints.setInitialExperience(1154);
+                skills.put(type, hitpoints);
+                continue;
+            }
             skills.put(type, SkillFactory.createSkill(type));
         }
     }

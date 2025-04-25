@@ -3,11 +3,23 @@ version: ${project.version}
 main: com.waldxn.MCRS.MCRS
 api-version: '1.21'
 commands:
-  stats:
-    description: Lists player stats
-    usage: /stats [player]
-    permission: mcrs.player.stats
+  skills:
+    description: Lists player skills
+    usage: /skills [player]
+    permission: mcrs.player.skills
+  leaderboard:
+    description: Displays the leaderboard
+    usage: /leaderboard [skill]
+    permission: mcrs.player.leaderboard
   saveall:
-    description: Saves all player stats
+    description: Saves all player skills
     usage: /saveall
     permission: mcrs.admin.saveall
+  setskill:
+    description: Sets a player's skill level
+    usage: /setstat <player> <skill> <value>
+    permission: mcrs.admin.setskill
+  wipeskills:
+    description: Wipes a player's skill levels
+    usage: /wipestats <player>
+    permission: mcrs.admin.wipeskills

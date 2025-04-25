@@ -1,8 +1,8 @@
 package com.waldxn.MCRS.skill.manager;
 
 import com.waldxn.MCRS.MCRS;
-import com.waldxn.MCRS.skill.core.SkillType;
 import com.waldxn.MCRS.skill.core.ExperienceUtil;
+import com.waldxn.MCRS.skill.core.SkillType;
 import org.bukkit.Bukkit;
 import org.bukkit.boss.BarColor;
 import org.bukkit.boss.BarStyle;
@@ -10,6 +10,7 @@ import org.bukkit.boss.BossBar;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitTask;
 
+import java.text.DecimalFormat;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
@@ -22,6 +23,11 @@ public class BossBarManager {
     private static final MCRS mcrs = MCRS.getPlugin(MCRS.class);
 
     public static void showXPBar(Player bukkitPlayer, SkillType skillType, double currentXP) {
+
+        System.out.println("BossBar: Showing XP bar for " + bukkitPlayer.getName() +
+                " | Skill: " + skillType +
+                " | XP: " + currentXP);
+
         if (skillType == SkillType.HITPOINTS) return; // Hides the hitpoints skill bar to avoid overlap with other combat skills
 
         UUID uuid = bukkitPlayer.getUniqueId();
@@ -33,7 +39,11 @@ public class BossBarManager {
         double progress = (currentXP - xpAtCurrentLevel) / (xpAtNextLevel - xpAtCurrentLevel);
         progress = Math.min(Math.max(progress, 0), 1.0);
 
-        String title = skillType.getName() + ": " + (int) currentXP + " / " + (int) ExperienceUtil.getXPForLevel(ExperienceUtil.getLevelForXP(currentXP) + 1) + " XP | Level: " + currentLevel;
+        DecimalFormat formatter = new DecimalFormat("#,###");
+        String current = formatter.format((int) xpAtCurrentLevel);
+        String needed = formatter.format((int) xpAtNextLevel);
+
+        String title = skillType.getName() + ": " + current + " / " + needed + " XP | Level: " + currentLevel;
 
         BossBar bar = activeBossBars.get(uuid);
         if (bar == null) {

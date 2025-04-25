@@ -5,12 +5,12 @@ import com.waldxn.MCRS.player.PlayerDataDAO;
 import com.waldxn.MCRS.player.PlayerManager;
 import com.waldxn.MCRS.skill.manager.DatabaseManager;
 import com.waldxn.MCRS.util.ChatUtil;
-import org.bukkit.Bukkit;
+import com.waldxn.MCRS.util.LogUtil;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 
-public class SaveAll implements CommandExecutor {
+public class SaveAllCommand implements CommandExecutor {
 
     @SuppressWarnings("NullableProblems")
     @Override
@@ -33,7 +33,7 @@ public class SaveAll implements CommandExecutor {
         }
 
         commandSender.sendMessage(ChatUtil.color("&aAll players have been saved."));
-        Bukkit.getLogger().info("/saveall triggered - all player data saved.");
+        LogUtil.info("/saveall triggered - all player data saved.");
 
         return true;
     }

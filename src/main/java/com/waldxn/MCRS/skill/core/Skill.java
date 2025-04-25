@@ -2,6 +2,7 @@ package com.waldxn.MCRS.skill.core;
 
 import com.waldxn.MCRS.util.ChatUtil;
 
+import java.text.DecimalFormat;
 import java.util.List;
 
 public abstract class Skill {
@@ -24,6 +25,11 @@ public abstract class Skill {
         return level;
     }
 
+    public void setLevel(int level) {
+        this.level = level;
+        this.experience = ExperienceUtil.getXPForLevel(level);
+    }
+
     public double getExperience() {
         return experience;
     }
@@ -39,10 +45,6 @@ public abstract class Skill {
         return leveledUp;
     }
 
-    protected double getExperienceToLevelUp() {
-        return ExperienceUtil.getXPForLevel(level + 1) - ExperienceUtil.getXPForLevel(level);
-    }
-
     public List<String> getHoverInfo() {
         int level = getLevel();
         double experience = getExperience();
@@ -50,9 +52,20 @@ public abstract class Skill {
         double currentLevelExperience = ExperienceUtil.getXPForLevel(level);
         int neededExperience = (int) (nextLevelExperience - currentLevelExperience);
 
+        DecimalFormat formatter = new DecimalFormat("#,###");
+        String current = formatter.format((int) experience - (int) currentLevelExperience);
+        String needed = formatter.format(neededExperience);
+
+        if (level == 99) {
+            return List.of(
+                    ChatUtil.color("&6Level: " + level),
+                    ChatUtil.color("&eXP: " + (int) experience)
+            );
+        }
+
         return List.of(
                 ChatUtil.color("&6Level: " + level),
-                ChatUtil.color("&eXP: " + (int)(experience - currentLevelExperience) + " / " + neededExperience)
+                ChatUtil.color("&eXP: " + current + " / " + needed)
         );
     }
 
