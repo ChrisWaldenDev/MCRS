@@ -24,6 +24,7 @@ public class SkillManager {
         if (bukkitPlayer != null) {
             BossBarManager.showXPBar(bukkitPlayer, type, skill.getExperience());
         }
+
         if (leveledUp && newLevel > level) {
             bukkitPlayer.sendMessage(ChatColor.BLUE + "Congratulations, you just advanced a " + type.getName() + " level.");
             bukkitPlayer.sendMessage(ChatColor.GOLD + "Your " + type.getName() + " level is now " + newLevel);

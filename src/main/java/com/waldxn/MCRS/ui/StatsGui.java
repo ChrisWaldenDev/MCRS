@@ -11,22 +11,26 @@ import org.bukkit.inventory.meta.ItemMeta;
 
 public class StatsGui {
 
-    public static void open(MCRSPlayer player) {
+    public static void open(MCRSPlayer viewer, MCRSPlayer target) {
 
-        int totalLevel = calculateTotalLevel(player);
+        int totalLevel = calculateTotalLevel(target);
 
-        Inventory gui = Bukkit.createInventory(null, 27, ChatUtil.color("&l" + player.getName() + "'s Total Level: &2&l" + totalLevel));
+        Inventory gui = Bukkit.createInventory(null, 27, ChatUtil.color("&l" + target.getName() + "'s Total Level: &2&l" + totalLevel));
 
         int slot = 0;
         for (SkillType type : SkillType.values()) {
             // Centers the bottom row of skill icons
             while ((slot % 9 < 3 || slot % 9 > 5) && slot >= 18) slot++;
 
-            ItemStack item = createSkillItem(type, player.getSkill(type));
+            ItemStack item = createSkillItem(type, target.getSkill(type));
             gui.setItem(slot, item);
             slot++;
         }
-        player.getBukkitPlayer().openInventory(gui);
+        viewer.getBukkitPlayer().openInventory(gui);
+    }
+
+    public static void open(MCRSPlayer player) {
+        open(player, player);
     }
 
     private static int calculateTotalLevel(MCRSPlayer player) {
