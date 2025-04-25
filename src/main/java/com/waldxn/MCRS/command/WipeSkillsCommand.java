@@ -16,7 +16,7 @@ import java.util.List;
 import java.util.UUID;
 
 @SuppressWarnings("NullableProblems")
-public class WipeStatsCommand implements CommandExecutor {
+public class WipeSkillsCommand implements CommandExecutor {
 
     private final List<MCRSPlayer> confirmPlayer = new ArrayList<>();
 
@@ -43,7 +43,7 @@ public class WipeStatsCommand implements CommandExecutor {
 
         UUID uuid = bukkitPlayer.getUniqueId();
 
-        MCRSPlayer player = PlayerManager.get(uuid);
+        MCRSPlayer player = PlayerManager.getOrLoad(uuid);
 
         if (confirmPlayer.contains(player)) {
             commandSender.sendMessage(ChatUtil.color("&aWiping stats for &e" + player.getName()));

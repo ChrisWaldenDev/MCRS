@@ -20,11 +20,11 @@ import java.util.UUID;
 import java.util.stream.Collectors;
 
 @SuppressWarnings("NullableProblems")
-public class SetStatCommand implements CommandExecutor, TabCompleter {
+public class SetSkillCommand implements CommandExecutor, TabCompleter {
 
     @Override
     public boolean onCommand(CommandSender commandSender, Command command, String s, String[] strings) {
-        if (!commandSender.hasPermission("mcrs.admin.setstat")) {
+        if (!commandSender.hasPermission("mcrs.admin.setskill")) {
             commandSender.sendMessage(ChatUtil.color("&4You do not have permission to use this command."));
             return true;
         }
