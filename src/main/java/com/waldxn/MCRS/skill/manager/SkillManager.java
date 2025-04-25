@@ -22,7 +22,7 @@ public class SkillManager {
         Player bukkitPlayer = Bukkit.getPlayer(mcrsPlayer.getUUID());
 
         if (bukkitPlayer != null) {
-            BossBarManager.showXPBar(bukkitPlayer, type, skill.getExperience());
+            BossBarManager.showXPBar(bukkitPlayer, type, skill.getExperience(), amount);
         }
 
         if (leveledUp && newLevel > level) {
