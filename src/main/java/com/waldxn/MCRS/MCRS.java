@@ -60,12 +60,14 @@ public final class MCRS extends JavaPlugin {
 
     private void registerCommands() {
         SetSkillCommand setSkillCommand = new SetSkillCommand();
+        LeaderboardCommand leaderboardCommand = new LeaderboardCommand();
         getCommand("skills").setExecutor(new SkillsCommand());
         getCommand("saveall").setExecutor(new SaveAllCommand());
         getCommand("setskill").setExecutor(setSkillCommand);
         getCommand("setskill").setTabCompleter(setSkillCommand);
         getCommand("wipeskills").setExecutor(new WipeSkillsCommand());
-        getCommand("leaderboard").setExecutor(new LeaderboardCommand());
+        getCommand("leaderboard").setExecutor(leaderboardCommand);
+        getCommand("leaderboard").setTabCompleter(leaderboardCommand);
     }
 
     public static MCRS getInstance() {
