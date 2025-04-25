@@ -12,6 +12,7 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.SkullMeta;
 
 import javax.annotation.Nullable;
+import java.text.DecimalFormat;
 import java.util.List;
 import java.util.Map;
 
@@ -46,20 +47,21 @@ public class LeaderboardGui {
         ItemStack skull = new ItemStack(Material.PLAYER_HEAD);
         SkullMeta meta = (SkullMeta) skull.getItemMeta();
 
-        String rankDisplay = rank > 0 ? "&e#" + rank + " " : "&7";
+        String rankDisplay = rank > 0 ? "&f#" + rank + " " : "&7";
         meta.setDisplayName(ChatUtil.color(rankDisplay + "&a" + player.getName()));
 
         List<String> lore = new java.util.ArrayList<>();
 
-        lore.add(ChatUtil.color("&7Level: " + (skillType != null
+        DecimalFormat formatter = new DecimalFormat("#,###");
+        String currentXP = formatter.format((int) (skillType != null
+                ? player.getSkill(skillType).getExperience()
+                : getTotalXP(player)));
+
+        lore.add(ChatUtil.color("&6Level: " + (skillType != null
                 ? player.getSkill(skillType).getLevel()
                 : getTotalLevel(player))));
 
-        lore.add(ChatUtil.color("&7XP: " + (int) (
-                skillType != null
-                        ? player.getSkill(skillType).getExperience()
-                        : getTotalXP(player)
-        )));
+        lore.add(ChatUtil.color("&eXP: " + currentXP));
 
         meta.setLore(lore);
         meta.setOwningPlayer(Bukkit.getOfflinePlayer(player.getUUID()));
