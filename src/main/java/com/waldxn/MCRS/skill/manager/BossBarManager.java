@@ -26,9 +26,9 @@ public class BossBarManager {
 
     public static void showXPBar(Player bukkitPlayer, SkillType skillType, double currentXP, double amountGained) {
 
-        System.out.println("BossBar: Showing XP bar for " + bukkitPlayer.getName() +
+        /*System.out.println("BossBar: Showing XP bar for " + bukkitPlayer.getName() +
                 " | Skill: " + skillType +
-                " | XP: " + currentXP);
+                " | XP: " + currentXP);*/
 
         if (skillType == SkillType.HITPOINTS) return; // Hides the hitpoints skill bar to avoid overlap with other combat skills
 
