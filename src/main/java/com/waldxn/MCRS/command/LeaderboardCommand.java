@@ -31,7 +31,7 @@ public class LeaderboardCommand implements Subcommand {
                                     String input = builder.getRemainingLowerCase();
                                     for (SkillType skill : SkillType.values()) {
                                         if (skill.name().toLowerCase().startsWith(input))
-                                            builder.suggest(skill.name());
+                                            builder.suggest(skill.name().toLowerCase());
                                     }
                                     return builder.buildFuture();
                                 })

@@ -9,17 +9,13 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.CraftItemEvent;
 
-import static com.waldxn.MCRS.util.MaterialGroups.CRAFTABLE_FOOD;
 import static com.waldxn.MCRS.util.MaterialGroups.FLETCHING;
 
-public class CraftingListener implements Listener {
+public class FletchingListener implements Listener {
 
     @EventHandler
-    public void onPlayerCraft(CraftItemEvent event) {
-        // Check if the item is a food item -- Avoids crafting XP where cooking xp is rewarded
-        if (CRAFTABLE_FOOD.contains(event.getRecipe().getResult().getType()) ||
-                FLETCHING.contains(event.getRecipe().getResult().getType())) return;
-
+    public void onFletch(CraftItemEvent event) {
+        if (!FLETCHING.contains(event.getRecipe().getResult().getType())) return;
 
         if (!(event.getWhoClicked() instanceof Player player)) return;
 

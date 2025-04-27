@@ -7,6 +7,7 @@ import java.util.Set;
 
 public class MaterialGroups {
 
+    // Farming material groups
     public static final Set<Material> FARMABLE_BLOCKS = EnumSet.of(
             Material.WHEAT,
             Material.CARROTS,
@@ -28,6 +29,7 @@ public class MaterialGroups {
             Material.SUGAR_CANE
     );
 
+    // Cooking material groups
     public static final Set<Material> COOKABLE_FOOD = EnumSet.of(
             Material.POTATO,
             Material.KELP,
@@ -52,5 +54,13 @@ public class MaterialGroups {
             Material.CAKE,
             Material.GOLDEN_CARROT,
             Material.GOLDEN_APPLE
+    );
+
+    // Fletching material groups
+    public static final Set<Material> FLETCHING = EnumSet.of(
+            Material.BOW,
+            Material.CROSSBOW,
+            Material.ARROW,
+            Material.SPECTRAL_ARROW
     );
 }

@@ -56,6 +56,7 @@ public final class MCRS extends JavaPlugin {
         pm.registerEvents(new CraftingListener(), this);
         pm.registerEvents(new FarmingListener(), this);
         pm.registerEvents(new FishingListener(), this);
+        pm.registerEvents(new FletchingListener(), this);
     }
 
     public static MCRS getInstance() {
