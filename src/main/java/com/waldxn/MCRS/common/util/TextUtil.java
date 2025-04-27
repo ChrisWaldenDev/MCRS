@@ -1,19 +1,9 @@
 package com.waldxn.MCRS.common.util;
 
 import net.kyori.adventure.text.Component;
-import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
 
 public class TextUtil {
-
-    public static Component xpGainBossBar(double amount, Component title) {
-        return Component.text()
-                .append(Component.text("+" + (int) amount + " XP", NamedTextColor.GREEN))
-                .append(Component.text(" → ", NamedTextColor.WHITE))
-                .append(title)
-                .build();
-    }
-
     /*
      * Translates legacy '&' color codes into an Adventure Component.
      */

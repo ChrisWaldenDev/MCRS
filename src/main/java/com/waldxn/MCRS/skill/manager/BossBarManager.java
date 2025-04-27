@@ -1,7 +1,6 @@
 package com.waldxn.MCRS.skill.manager;
 
 import com.waldxn.MCRS.MCRS;
-import com.waldxn.MCRS.common.util.TextUtil;
 import com.waldxn.MCRS.skill.core.ExperienceUtil;
 import com.waldxn.MCRS.skill.core.SkillType;
 import net.kyori.adventure.bossbar.BossBar;
@@ -65,9 +64,14 @@ public class BossBarManager {
         }
 
         bukkitPlayer.showBossBar(bar);
-
         BossBar finalBar = bar;
-        Component gainTitle = TextUtil.xpGainBossBar(amountGained, title);
+
+        Component gainTitle = Component.text()
+                .append(Component.text("+" + (int) amountGained + " XP", NamedTextColor.GREEN))
+                .append(Component.text(" → ", NamedTextColor.WHITE))
+                .append(title)
+                .build();
+
         bar.name(gainTitle);
         bar.progress((float) progress);
 
