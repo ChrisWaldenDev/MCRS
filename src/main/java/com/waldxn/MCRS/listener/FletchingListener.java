@@ -29,6 +29,6 @@ public class FletchingListener implements Listener {
         }
 
         // TODO: Customize the amount of XP given based on the item crafted (config)
-        SkillManager.giveExperience(PlayerManager.get(player.getUniqueId()), SkillType.CRAFTING, 25 * amountCrafted);
+        SkillManager.giveExperience(PlayerManager.get(player.getUniqueId()), SkillType.FLETCHING, 25 * amountCrafted);
     }
 }
