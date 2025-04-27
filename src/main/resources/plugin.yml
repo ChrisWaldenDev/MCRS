@@ -2,8 +2,3 @@ name: MCRS
 version: ${project.version}
 main: com.waldxn.MCRS.MCRS
 api-version: '1.21'
-commands:
-  wipeskills:
-    description: Wipes a player's skill levels
-    usage: /wipestats <player>
-    permission: mcrs.admin.wipeskills
