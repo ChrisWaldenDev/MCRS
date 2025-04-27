@@ -71,6 +71,7 @@ public final class MCRS extends JavaPlugin {
         pm.registerEvents(new FarmingListener(skillManager, playerManager), this);
         pm.registerEvents(new FishingListener(skillManager, playerManager), this);
         pm.registerEvents(new FletchingListener(skillManager, playerManager), this);
+        pm.registerEvents(new HerbloreListener(skillManager, playerManager), this);
     }
 
     public static MCRS getInstance() {

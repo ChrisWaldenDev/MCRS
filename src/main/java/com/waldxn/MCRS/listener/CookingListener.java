@@ -1,6 +1,7 @@
 package com.waldxn.MCRS.listener;
 
 import com.waldxn.MCRS.MCRS;
+import com.waldxn.MCRS.common.util.CraftingUtil;
 import com.waldxn.MCRS.player.MCRSPlayer;
 import com.waldxn.MCRS.player.PlayerManager;
 import com.waldxn.MCRS.skill.core.SkillType;
@@ -9,17 +10,17 @@ import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
-import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.block.Campfire;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
+import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockCookEvent;
 import org.bukkit.event.inventory.CraftItemEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
-import org.bukkit.inventory.*;
+import org.bukkit.inventory.ItemStack;
 
 import java.util.HashMap;
 
@@ -72,7 +73,6 @@ public class CookingListener implements Listener {
     // TODO: Possibly adjust time to cook based on player level
     @EventHandler
     public void onPlayerInteract(PlayerInteractEvent event) {
-        // Checks if the player is using a campfire
         if (event.getClickedBlock() == null) return;
 
         // Checks if the player is using a campfire
@@ -134,7 +134,7 @@ public class CookingListener implements Listener {
 
         // Handles shift-click crafting
         if (event.isShiftClick()) {
-            amountCrafted = getCraftedAmount(event);
+            amountCrafted = CraftingUtil.getCraftedAmount(event);
         } else if (event.getCurrentItem() != null) {
             amountCrafted = event.getCurrentItem().getAmount();
         }
@@ -143,25 +143,14 @@ public class CookingListener implements Listener {
         skillManager.giveExperience(playerManager.get(bukkitPlayer.getUniqueId()), SkillType.COOKING, 50 * amountCrafted);
     }
 
-    // Function to handle shift-click crafting
-    private int getCraftedAmount(CraftItemEvent event) {
-        CraftingInventory inventory = event.getInventory();
-        Recipe recipe = event.getRecipe();
+    @EventHandler
+    public void onCampfireBreak(BlockBreakEvent event) {
+        if (!(event.getBlock().getState() instanceof Campfire campfire)) return;
 
-        // Returns 0 if the recipe is not a vanilla recipe
-        if (!(recipe instanceof ShapedRecipe) && !(recipe instanceof ShapelessRecipe)) {
-            return 0;
-        }
+        Location location = campfire.getLocation();
 
-        ItemStack[] matrix = inventory.getMatrix();
-        int maxCrafts = Integer.MAX_VALUE;
+        if (!cooking.containsKey(location)) return;
 
-        // Finds the lowest amount of items in an ItemStack in the recipe, to determine how many times the recipe can be crafted
-        for (ItemStack item : matrix) {
-            if (item != null && item.getType() != Material.AIR) {
-                maxCrafts = Math.min(maxCrafts, item.getAmount());
-            }
-        }
-        return maxCrafts * recipe.getResult().getAmount();
+        cooking.remove(location);
     }
 }
