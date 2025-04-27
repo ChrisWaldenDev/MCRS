@@ -1,5 +1,6 @@
 package com.waldxn.MCRS.listener;
 
+import com.waldxn.MCRS.MCRS;
 import com.waldxn.MCRS.player.PlayerManager;
 import com.waldxn.MCRS.skill.core.SkillType;
 import com.waldxn.MCRS.skill.manager.SkillManager;
@@ -15,6 +16,8 @@ import java.util.UUID;
 public class AgilityListener implements Listener {
 
     private final Map<UUID, Long> lastXP = new HashMap<>();
+    private final SkillManager skillManager = MCRS.getServiceRegistry().getSkillManager();
+    private final PlayerManager playerManager = MCRS.getServiceRegistry().getPlayerManager();
 
     //Awards Player XP if they are Sprinting, Jumping, or Climbing
     @EventHandler
@@ -35,9 +38,9 @@ public class AgilityListener implements Listener {
         // Adds the player to a map to prevent spamming xp gains
         lastXP.put(uuid, now);
 
-        var player = PlayerManager.get(uuid);
+        var player = playerManager.get(uuid);
         if (player != null) {
-            SkillManager.giveExperience(player, SkillType.AGILITY, 10.0); // 10 XP awarded every 0.5 seconds TODO: Possibly configurable?
+            skillManager.giveExperience(player, SkillType.AGILITY, 10.0); // 10 XP awarded every 0.5 seconds TODO: Possibly configurable?
         }
     }
 

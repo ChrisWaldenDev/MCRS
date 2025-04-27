@@ -1,4 +1,4 @@
-package com.waldxn.MCRS.util;
+package com.waldxn.MCRS.common.util;
 
 import com.waldxn.MCRS.MCRS;
 

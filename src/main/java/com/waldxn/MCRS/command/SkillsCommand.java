@@ -3,10 +3,11 @@ package com.waldxn.MCRS.command;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
+import com.waldxn.MCRS.MCRS;
+import com.waldxn.MCRS.common.ui.SkillsGui;
+import com.waldxn.MCRS.common.util.Permissions;
 import com.waldxn.MCRS.player.MCRSPlayer;
 import com.waldxn.MCRS.player.PlayerManager;
-import com.waldxn.MCRS.ui.SkillsGui;
-import com.waldxn.MCRS.util.Permissions;
 import io.papermc.paper.command.brigadier.CommandSourceStack;
 import io.papermc.paper.command.brigadier.Commands;
 import io.papermc.paper.command.brigadier.argument.ArgumentTypes;
@@ -19,6 +20,9 @@ import org.bukkit.entity.Player;
 @SuppressWarnings("UnstableApiUsage")
 public class SkillsCommand implements Subcommand {
 
+    private final PlayerManager playerManager = MCRS.getServiceRegistry().getPlayerManager();
+    private final SkillsGui skillsGui = MCRS.getServiceRegistry().getSkillsGui();
+
     @Override
     public LiteralArgumentBuilder<CommandSourceStack> build() {
         return Commands.literal("skills")
@@ -27,7 +31,7 @@ public class SkillsCommand implements Subcommand {
                 .then(
                         Commands.argument("player", ArgumentTypes.player())
                                 .suggests((context, builder) -> {
-                                    for (MCRSPlayer player : PlayerManager.getPlayers()) {
+                                    for (MCRSPlayer player : playerManager.getPlayers()) {
                                         String name = player.getName();
                                         if (name.toLowerCase().startsWith(builder.getRemainingLowerCase()))
                                             builder.suggest(name);
@@ -57,16 +61,16 @@ public class SkillsCommand implements Subcommand {
                     return 0;
                 }
 
-                target = PlayerManager.getOrLoad(resolvedPlayer.getUniqueId());
+                target = playerManager.getOrLoad(resolvedPlayer.getUniqueId());
             } catch (CommandSyntaxException e) {
                 viewer.sendMessage(Component.text("Invalid player selector", NamedTextColor.DARK_RED));
                 return 0;
             }
         } else {
-            target = PlayerManager.get(viewer.getUniqueId());
+            target = playerManager.get(viewer.getUniqueId());
         }
 
-        SkillsGui.open(PlayerManager.get(viewer.getUniqueId()), target);
+        skillsGui.open(playerManager.get(viewer.getUniqueId()), target);
         return 1;
 
     }

@@ -1,17 +1,21 @@
 package com.waldxn.MCRS.listener;
 
+import com.waldxn.MCRS.MCRS;
+import com.waldxn.MCRS.common.util.CraftingUtil;
 import com.waldxn.MCRS.player.PlayerManager;
 import com.waldxn.MCRS.skill.core.SkillType;
 import com.waldxn.MCRS.skill.manager.SkillManager;
-import com.waldxn.MCRS.util.CraftingUtil;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.CraftItemEvent;
 
-import static com.waldxn.MCRS.util.MaterialGroups.FLETCHING;
+import static com.waldxn.MCRS.common.util.MaterialGroups.FLETCHING;
 
 public class FletchingListener implements Listener {
+
+    private final SkillManager skillManager = MCRS.getServiceRegistry().getSkillManager();
+    private final PlayerManager playerManager = MCRS.getServiceRegistry().getPlayerManager();
 
     @EventHandler
     public void onFletch(CraftItemEvent event) {
@@ -29,6 +33,6 @@ public class FletchingListener implements Listener {
         }
 
         // TODO: Customize the amount of XP given based on the item crafted (config)
-        SkillManager.giveExperience(PlayerManager.get(player.getUniqueId()), SkillType.FLETCHING, 25 * amountCrafted);
+        skillManager.giveExperience(playerManager.get(player.getUniqueId()), SkillType.FLETCHING, 25 * amountCrafted);
     }
 }

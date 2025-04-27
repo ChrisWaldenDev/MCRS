@@ -1,4 +1,4 @@
-package com.waldxn.MCRS.util;
+package com.waldxn.MCRS.common.util;
 
 import org.bukkit.Material;
 import org.bukkit.event.inventory.CraftItemEvent;

@@ -1,5 +1,6 @@
 package com.waldxn.MCRS.listener;
 
+import com.waldxn.MCRS.MCRS;
 import com.waldxn.MCRS.player.MCRSPlayer;
 import com.waldxn.MCRS.player.PlayerManager;
 import com.waldxn.MCRS.skill.core.SkillType;
@@ -14,18 +15,21 @@ import org.bukkit.event.player.PlayerFishEvent;
 
 public class FishingListener implements Listener {
 
+    private final SkillManager skillManager = MCRS.getServiceRegistry().getSkillManager();
+    private final PlayerManager playerManager = MCRS.getServiceRegistry().getPlayerManager();
+
     @EventHandler
     public void onFish(PlayerFishEvent event) {
         if (event.getState() != PlayerFishEvent.State.CAUGHT_FISH) return;
 
-        MCRSPlayer player = PlayerManager.get(event.getPlayer().getUniqueId());
+        MCRSPlayer player = playerManager.get(event.getPlayer().getUniqueId());
 
         Entity caught = event.getCaught();
         if (!(caught instanceof Item)) return;
 
         if (!isFish(((Item) caught).getItemStack().getType())) return;
 
-        SkillManager.giveExperience(player, SkillType.FISHING, 50);
+        skillManager.giveExperience(player, SkillType.FISHING, 50);
     }
 
     private boolean isFish(Material type) {

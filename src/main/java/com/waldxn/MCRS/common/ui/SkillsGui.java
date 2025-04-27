@@ -1,9 +1,9 @@
-package com.waldxn.MCRS.ui;
+package com.waldxn.MCRS.common.ui;
 
+import com.waldxn.MCRS.common.util.TextUtil;
 import com.waldxn.MCRS.player.MCRSPlayer;
 import com.waldxn.MCRS.skill.core.Skill;
 import com.waldxn.MCRS.skill.core.SkillType;
-import com.waldxn.MCRS.util.TextUtil;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextDecoration;
@@ -14,7 +14,7 @@ import org.bukkit.inventory.meta.ItemMeta;
 
 public class SkillsGui {
 
-    public static void open(MCRSPlayer viewer, MCRSPlayer target) {
+    public void open(MCRSPlayer viewer, MCRSPlayer target) {
 
         int totalLevel = calculateTotalLevel(target);
         Component title = TextUtil.translate("&l" + target.getName() + "'s Total Level: &2&l" + totalLevel);
@@ -33,7 +33,7 @@ public class SkillsGui {
         viewer.getBukkitPlayer().openInventory(gui);
     }
 
-    private static int calculateTotalLevel(MCRSPlayer player) {
+    private int calculateTotalLevel(MCRSPlayer player) {
         int totalLevel = 0;
         for (Skill skill : player.getSkills().values()) {
             totalLevel += skill.getLevel();
@@ -41,7 +41,7 @@ public class SkillsGui {
         return totalLevel;
     }
 
-    private static ItemStack createSkillItem(SkillType type, Skill skill) {
+    private ItemStack createSkillItem(SkillType type, Skill skill) {
         ItemStack item = new ItemStack(type.getIcon());
         ItemMeta meta = item.getItemMeta();
         meta.displayName(Component.text(type.getName(), NamedTextColor.WHITE, TextDecoration.BOLD));

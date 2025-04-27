@@ -1,5 +1,6 @@
 package com.waldxn.MCRS.listener;
 
+import com.waldxn.MCRS.MCRS;
 import com.waldxn.MCRS.player.PlayerManager;
 import com.waldxn.MCRS.skill.core.SkillType;
 import com.waldxn.MCRS.skill.manager.SkillManager;
@@ -19,6 +20,8 @@ import java.util.UUID;
 public class RangedListener implements Listener {
 
     private final Map<UUID, Long> lastXP = new HashMap<>();
+    private final SkillManager skillManager = MCRS.getServiceRegistry().getSkillManager();
+    private final PlayerManager playerManager = MCRS.getServiceRegistry().getPlayerManager();
 
     @EventHandler
     public void onRangedAttack(EntityDamageByEntityEvent event) {
@@ -37,12 +40,12 @@ public class RangedListener implements Listener {
 
         lastXP.put(uuid, now);
 
-        var player = PlayerManager.get(uuid);
+        var player = playerManager.get(uuid);
         if (player != null) {
             event.getEntity().sendMessage("2");
 
-            SkillManager.giveExperience(player, SkillType.RANGED, event.getFinalDamage() * 4); // XP awarded every 0.5 seconds, in the amount of final damage done after all damage reductions are applied * 4
-            SkillManager.giveExperience(player, SkillType.HITPOINTS, event.getFinalDamage() * 1.33); // XP awarded every 0.5 seconds, in the amount of final damage done after all damage reductions are applied * 1.33
+            skillManager.giveExperience(player, SkillType.RANGED, event.getFinalDamage() * 4); // XP awarded every 0.5 seconds, in the amount of final damage done after all damage reductions are applied * 4
+            skillManager.giveExperience(player, SkillType.HITPOINTS, event.getFinalDamage() * 1.33); // XP awarded every 0.5 seconds, in the amount of final damage done after all damage reductions are applied * 1.33
 
         }
     }

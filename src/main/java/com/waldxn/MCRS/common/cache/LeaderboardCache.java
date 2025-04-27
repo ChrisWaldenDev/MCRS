@@ -1,4 +1,4 @@
-package com.waldxn.MCRS.cache;
+package com.waldxn.MCRS.common.cache;
 
 import com.waldxn.MCRS.player.MCRSPlayer;
 import com.waldxn.MCRS.player.PlayerDataDAO;
@@ -14,18 +14,24 @@ public class LeaderboardCache {
     private static final Map<SkillType, List<Map.Entry<MCRSPlayer, Double>>> skillLeaderboards = new HashMap<>();
     private static List<Map.Entry<MCRSPlayer, Double>> totalXPLeaderboard = new ArrayList<>();
 
-    public static void refresh() {
-        for (SkillType skillType : SkillType.values()) {
-            skillLeaderboards.put(skillType, PlayerDataDAO.getLeaderboard(skillType));
-        }
-        totalXPLeaderboard = PlayerDataDAO.getTotalXPLeaderboard();
+    private final PlayerDataDAO playerDataDAO;
+
+    public LeaderboardCache(PlayerDataDAO playerDataDAO) {
+        this.playerDataDAO = playerDataDAO;
     }
 
-    public static List<Map.Entry<MCRSPlayer, Double>> getLeaderboard(SkillType skillType) {
+    public void refresh() {
+        for (SkillType skillType : SkillType.values()) {
+            skillLeaderboards.put(skillType, playerDataDAO.getLeaderboard(skillType));
+        }
+        totalXPLeaderboard = playerDataDAO.getTotalXPLeaderboard();
+    }
+
+    public List<Map.Entry<MCRSPlayer, Double>> getLeaderboard(SkillType skillType) {
         return skillLeaderboards.getOrDefault(skillType, List.of());
     }
 
-    public static List<Map.Entry<MCRSPlayer, Double>> getTotalXPLeaderboard() {
+    public List<Map.Entry<MCRSPlayer, Double>> getTotalXPLeaderboard() {
         return totalXPLeaderboard;
     }
 }

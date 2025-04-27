@@ -3,12 +3,13 @@ package com.waldxn.MCRS.command;
 import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import com.mojang.brigadier.context.CommandContext;
+import com.waldxn.MCRS.MCRS;
+import com.waldxn.MCRS.common.util.LogUtil;
+import com.waldxn.MCRS.common.util.Permissions;
 import com.waldxn.MCRS.player.MCRSPlayer;
 import com.waldxn.MCRS.player.PlayerDataDAO;
 import com.waldxn.MCRS.player.PlayerManager;
 import com.waldxn.MCRS.skill.manager.DatabaseManager;
-import com.waldxn.MCRS.util.LogUtil;
-import com.waldxn.MCRS.util.Permissions;
 import io.papermc.paper.command.brigadier.CommandSourceStack;
 import io.papermc.paper.command.brigadier.Commands;
 import net.kyori.adventure.text.Component;
@@ -17,6 +18,10 @@ import org.bukkit.command.CommandSender;
 
 @SuppressWarnings("UnstableApiUsage")
 public class SaveAllCommand implements Subcommand {
+
+    private final DatabaseManager databaseManager = MCRS.getServiceRegistry().getDatabaseManager();
+    private final PlayerManager playerManager = MCRS.getServiceRegistry().getPlayerManager();
+    private final PlayerDataDAO playerDataDAO = MCRS.getServiceRegistry().getPlayerDataDAO();
 
     @Override
     public LiteralArgumentBuilder<CommandSourceStack> build() {
@@ -50,13 +55,13 @@ public class SaveAllCommand implements Subcommand {
 
     private void savePlayerSkills(CommandContext<CommandSourceStack> context, boolean force) {
         CommandSender commandSender = context.getSource().getSender();
-        if (!DatabaseManager.isConnected()) {
+        if (!databaseManager.isConnected()) {
             commandSender.sendMessage(Component.text("You are not connected to the database.", NamedTextColor.DARK_RED));
             return;
         }
 
-        for (MCRSPlayer player : PlayerManager.getPlayers()) {
-            if (force || player.isDirty()) PlayerDataDAO.savePlayerSkills(player);
+        for (MCRSPlayer player : playerManager.getPlayers()) {
+            if (force || player.isDirty()) playerDataDAO.savePlayerSkills(player);
         }
 
         if (force) {

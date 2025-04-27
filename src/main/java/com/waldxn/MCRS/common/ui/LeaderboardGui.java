@@ -1,6 +1,6 @@
-package com.waldxn.MCRS.ui;
+package com.waldxn.MCRS.common.ui;
 
-import com.waldxn.MCRS.cache.LeaderboardCache;
+import com.waldxn.MCRS.common.cache.LeaderboardCache;
 import com.waldxn.MCRS.player.MCRSPlayer;
 import com.waldxn.MCRS.skill.core.Skill;
 import com.waldxn.MCRS.skill.core.SkillType;
@@ -20,11 +20,17 @@ import java.util.Map;
 
 public class LeaderboardGui {
 
-    public static void open(MCRSPlayer player, @Nullable SkillType skillType) {
+    private final LeaderboardCache leaderboardCache;
+
+    public LeaderboardGui(LeaderboardCache leaderboardCache) {
+        this.leaderboardCache = leaderboardCache;
+    }
+
+    public void open(MCRSPlayer player, @Nullable SkillType skillType) {
 
         List<Map.Entry<MCRSPlayer, Double>> leaderboard = (skillType == null) ?
-                LeaderboardCache.getTotalXPLeaderboard() :
-                LeaderboardCache.getLeaderboard(skillType);
+                leaderboardCache.getTotalXPLeaderboard() :
+                leaderboardCache.getLeaderboard(skillType);
 
         int maxEntries = 25;
         int totalSlots = 27;
@@ -47,7 +53,7 @@ public class LeaderboardGui {
         player.getBukkitPlayer().openInventory(gui);
     }
 
-    private static ItemStack createLeaderboardItem(MCRSPlayer player, int rank, @Nullable SkillType skillType) {
+    private ItemStack createLeaderboardItem(MCRSPlayer player, int rank, @Nullable SkillType skillType) {
         ItemStack skull = new ItemStack(Material.PLAYER_HEAD);
         SkullMeta meta = (SkullMeta) skull.getItemMeta();
 
@@ -74,13 +80,13 @@ public class LeaderboardGui {
         return skull;
     }
 
-    private static int getTotalLevel(MCRSPlayer p) {
+    private int getTotalLevel(MCRSPlayer p) {
         return p.getSkills().values().stream()
                 .mapToInt(Skill::getLevel)
                 .sum();
     }
 
-    private static double getTotalXP(MCRSPlayer p) {
+    private double getTotalXP(MCRSPlayer p) {
         return p.getSkills().values().stream()
                 .mapToDouble(Skill::getExperience)
                 .sum();

@@ -2,7 +2,7 @@ package com.waldxn.MCRS.command;
 
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import com.mojang.brigadier.context.CommandContext;
-import com.waldxn.MCRS.util.Permissions;
+import com.waldxn.MCRS.common.util.Permissions;
 import io.papermc.paper.command.brigadier.CommandSourceStack;
 import io.papermc.paper.command.brigadier.Commands;
 import net.kyori.adventure.text.Component;

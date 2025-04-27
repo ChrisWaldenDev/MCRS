@@ -15,25 +15,28 @@ import java.util.UUID;
 
 public class PlayerListener implements Listener {
 
+    private final PlayerDataDAO playerDataDAO = MCRS.getServiceRegistry().getPlayerDataDAO();
+    private final PlayerManager playerManager = MCRS.getServiceRegistry().getPlayerManager();
+
     @EventHandler
     public void onPlayerJoin(PlayerJoinEvent event) {
         UUID uuid = event.getPlayer().getUniqueId();
 
-        if (PlayerManager.isLoaded(uuid)) return; // Player is already loaded
+        if (playerManager.isLoaded(uuid)) return; // Player is already loaded
 
         Bukkit.getScheduler().runTaskAsynchronously(MCRS.getInstance(), () -> {
-            MCRSPlayer loaded = PlayerDataDAO.loadPlayerFromSQL(uuid);
-            Bukkit.getScheduler().runTask(MCRS.getInstance(), () -> PlayerManager.put(loaded));
+            MCRSPlayer loaded = playerDataDAO.loadPlayerFromSQL(uuid);
+            Bukkit.getScheduler().runTask(MCRS.getInstance(), () -> playerManager.put(loaded));
         });
     }
 
     @EventHandler
     public void onPlayerQuit(PlayerQuitEvent event) {
         UUID uuid = event.getPlayer().getUniqueId();
-        MCRSPlayer player = PlayerManager.get(uuid);
+        MCRSPlayer player = playerManager.get(uuid);
         if (player != null && player.isDirty()) {
-            Bukkit.getScheduler().runTaskAsynchronously(MCRS.getInstance(), () -> PlayerDataDAO.savePlayerSkills(player));
+            Bukkit.getScheduler().runTaskAsynchronously(MCRS.getInstance(), () -> playerDataDAO.savePlayerSkills(player));
         }
-        PlayerManager.remove(uuid);
+        playerManager.remove(uuid);
     }
 }

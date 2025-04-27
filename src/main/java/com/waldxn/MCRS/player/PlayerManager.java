@@ -9,32 +9,37 @@ import java.util.concurrent.ConcurrentHashMap;
 public class PlayerManager {
 
     private static final Map<UUID, MCRSPlayer> players = new ConcurrentHashMap<>();
+    private PlayerDataDAO  playerDataDAO;
 
-    public static MCRSPlayer get(UUID uuid) {
+    public MCRSPlayer get(UUID uuid) {
         return players.get(uuid);
     }
 
-    public static void put(MCRSPlayer player) {
+    public void setPlayerDataDAO(PlayerDataDAO playerDataDAO) {
+        this.playerDataDAO = playerDataDAO;
+    }
+
+    public void put(MCRSPlayer player) {
         players.put(player.getUUID(), player);
     }
 
-    public static boolean isLoaded(UUID uuid) {
+    public boolean isLoaded(UUID uuid) {
         return players.containsKey(uuid);
     }
 
-    public static void remove(UUID uuid) {
+    public void remove(UUID uuid) {
         players.remove(uuid);
     }
 
     // Fallback method
-    public static MCRSPlayer getOrLoad(UUID uuid) {
+    public MCRSPlayer getOrLoad(UUID uuid) {
         if (isLoaded(uuid)) return get(uuid);
-        MCRSPlayer loaded = PlayerDataDAO.loadPlayerFromSQL(uuid);
+        MCRSPlayer loaded = playerDataDAO.loadPlayerFromSQL(uuid);
         put(loaded);
         return loaded;
     }
 
-    public static Collection<MCRSPlayer> getPlayers() {
+    public Collection<MCRSPlayer> getPlayers() {
         return players.values();
     }
 }

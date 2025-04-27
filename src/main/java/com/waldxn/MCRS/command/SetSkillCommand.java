@@ -4,13 +4,14 @@ import com.mojang.brigadier.arguments.IntegerArgumentType;
 import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import com.mojang.brigadier.context.CommandContext;
-import com.waldxn.MCRS.cache.LeaderboardCache;
+import com.waldxn.MCRS.MCRS;
+import com.waldxn.MCRS.common.cache.LeaderboardCache;
+import com.waldxn.MCRS.common.util.Permissions;
 import com.waldxn.MCRS.player.MCRSPlayer;
 import com.waldxn.MCRS.player.PlayerDataDAO;
 import com.waldxn.MCRS.player.PlayerManager;
 import com.waldxn.MCRS.skill.core.SkillType;
 import com.waldxn.MCRS.skill.manager.DatabaseManager;
-import com.waldxn.MCRS.util.Permissions;
 import io.papermc.paper.command.brigadier.CommandSourceStack;
 import io.papermc.paper.command.brigadier.Commands;
 import io.papermc.paper.command.brigadier.argument.ArgumentTypes;
@@ -28,6 +29,11 @@ import java.util.UUID;
 @SuppressWarnings("UnstableApiUsage")
 public class SetSkillCommand implements Subcommand {
 
+    private final DatabaseManager databaseManager = MCRS.getServiceRegistry().getDatabaseManager();
+    private final PlayerManager playerManager = MCRS.getServiceRegistry().getPlayerManager();
+    private final PlayerDataDAO playerDataDAO = MCRS.getServiceRegistry().getPlayerDataDAO();
+    private final LeaderboardCache leaderboardCache = MCRS.getServiceRegistry().getLeaderboardCache();
+
     @Override
     public LiteralArgumentBuilder<CommandSourceStack> build() {
         return Commands.literal("setskill")
@@ -35,7 +41,7 @@ public class SetSkillCommand implements Subcommand {
                 .then(
                         Commands.argument("player", ArgumentTypes.player())
                                 .suggests((context, builder) -> {
-                                    for (Map.Entry<MCRSPlayer, Double> entry : LeaderboardCache.getTotalXPLeaderboard()) {
+                                    for (Map.Entry<MCRSPlayer, Double> entry : leaderboardCache.getTotalXPLeaderboard()) {
                                         MCRSPlayer player = entry.getKey();
                                         String name = player.getName();
                                         if (name.toLowerCase().startsWith(builder.getRemainingLowerCase()))
@@ -70,7 +76,7 @@ public class SetSkillCommand implements Subcommand {
 
     private int setSkill(CommandContext<CommandSourceStack> context, String playerName, String skillName, int newValue) {
         CommandSender commandSender = context.getSource().getSender();
-        if (!DatabaseManager.isConnected()) {
+        if (!databaseManager.isConnected()) {
             commandSender.sendMessage(Component.text("You are not connected to the database.", NamedTextColor.DARK_RED));
             return 0;
         }
@@ -92,9 +98,9 @@ public class SetSkillCommand implements Subcommand {
             return 0;
         }
 
-        MCRSPlayer player = PlayerManager.getOrLoad(uuid);
+        MCRSPlayer player = playerManager.getOrLoad(uuid);
         player.setSkillLevel(skill, newValue);
-        PlayerDataDAO.savePlayerSkills(player);
+        playerDataDAO.savePlayerSkills(player);
 
         commandSender.sendMessage(Component.text("Set " + player.getName() + "'s " + skill.getName() + " level to " + newValue, NamedTextColor.GREEN));
 

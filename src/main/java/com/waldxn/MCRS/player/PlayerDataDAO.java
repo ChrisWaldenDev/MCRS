@@ -1,10 +1,10 @@
 package com.waldxn.MCRS.player;
 
+import com.waldxn.MCRS.common.util.LogUtil;
 import com.waldxn.MCRS.skill.core.Skill;
 import com.waldxn.MCRS.skill.core.SkillFactory;
 import com.waldxn.MCRS.skill.core.SkillType;
 import com.waldxn.MCRS.skill.manager.DatabaseManager;
-import com.waldxn.MCRS.util.LogUtil;
 
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -16,8 +16,16 @@ import java.util.UUID;
 
 public class PlayerDataDAO {
 
-    public static void savePlayerSkills(MCRSPlayer player) {
-        try (PreparedStatement ps = DatabaseManager.getConnection().prepareStatement(
+    private final DatabaseManager databaseManager;
+    private final PlayerManager playerManager;
+
+    public PlayerDataDAO(DatabaseManager databaseManager, PlayerManager playerManager) {
+        this.databaseManager = databaseManager;
+        this.playerManager = playerManager;
+    }
+
+    public void savePlayerSkills(MCRSPlayer player) {
+        try (PreparedStatement ps = databaseManager.getConnection().prepareStatement(
                 "REPLACE INTO player_skills (uuid, skill, experience) VALUES (?, ?, ?)")) {
 
             UUID uuid = player.getUUID();
@@ -33,11 +41,11 @@ public class PlayerDataDAO {
         }
     }
 
-    public static MCRSPlayer loadPlayerFromSQL(UUID uuid) {
+    public MCRSPlayer loadPlayerFromSQL(UUID uuid) {
         MCRSPlayer player = new MCRSPlayer(uuid);
         HashMap<SkillType, Skill> skills = new HashMap<>();
 
-        try (PreparedStatement ps = DatabaseManager.getConnection().prepareStatement(
+        try (PreparedStatement ps = databaseManager.getConnection().prepareStatement(
                 "SELECT skill, experience FROM player_skills WHERE uuid = ?")) {
 
             ps.setString(1, uuid.toString());
@@ -74,10 +82,10 @@ public class PlayerDataDAO {
         return player;
     }
 
-    public static List<Map.Entry<MCRSPlayer, Double>> getLeaderboard(SkillType skillType) {
+    public List<Map.Entry<MCRSPlayer, Double>> getLeaderboard(SkillType skillType) {
         Map<UUID, Double> xpMap = new HashMap<>();
 
-        try (PreparedStatement ps = DatabaseManager.getConnection().prepareStatement(
+        try (PreparedStatement ps = databaseManager.getConnection().prepareStatement(
                 "SELECT uuid, experience FROM player_skills WHERE skill = ?")) {
 
             ps.setString(1, skillType.name());
@@ -95,16 +103,16 @@ public class PlayerDataDAO {
 
         // Convert UUID to MCRSPlayer and sort
         return xpMap.entrySet().stream()
-                .map(entry -> Map.entry(PlayerManager.getOrLoad(entry.getKey()), entry.getValue()))
+                .map(entry -> Map.entry(playerManager.getOrLoad(entry.getKey()), entry.getValue()))
                 .filter(entry -> entry.getKey() != null)
                 .sorted((e1, e2) -> Double.compare(e2.getValue(), e1.getValue())) // Descending
                 .toList();
     }
 
-    public static List<Map.Entry<MCRSPlayer, Double>> getTotalXPLeaderboard() {
+    public List<Map.Entry<MCRSPlayer, Double>> getTotalXPLeaderboard() {
         Map<UUID, Double> uuidXpMap = new HashMap<>();
 
-        try (PreparedStatement ps = DatabaseManager.getConnection().prepareStatement(
+        try (PreparedStatement ps = databaseManager.getConnection().prepareStatement(
                 "SELECT uuid, SUM(experience) AS total_xp FROM player_skills GROUP BY uuid")) {
 
             ResultSet rs = ps.executeQuery();
@@ -120,7 +128,7 @@ public class PlayerDataDAO {
         }
 
         return uuidXpMap.entrySet().stream()
-                .map(entry -> Map.entry(PlayerManager.getOrLoad(entry.getKey()), entry.getValue()))
+                .map(entry -> Map.entry(playerManager.getOrLoad(entry.getKey()), entry.getValue()))
                 .filter(entry -> entry.getKey() != null)
                 .sorted((e1, e2) -> Double.compare(e2.getValue(), e1.getValue()))
                 .toList();

@@ -23,12 +23,14 @@ import org.bukkit.inventory.*;
 
 import java.util.HashMap;
 
-import static com.waldxn.MCRS.util.MaterialGroups.COOKABLE_FOOD;
-import static com.waldxn.MCRS.util.MaterialGroups.CRAFTABLE_FOOD;
+import static com.waldxn.MCRS.common.util.MaterialGroups.COOKABLE_FOOD;
+import static com.waldxn.MCRS.common.util.MaterialGroups.CRAFTABLE_FOOD;
 
 public class CookingListener implements Listener {
 
     private final HashMap<Location, Player> cooking = new HashMap<>();
+    private final SkillManager skillManager = MCRS.getServiceRegistry().getSkillManager();
+    private final PlayerManager playerManager = MCRS.getServiceRegistry().getPlayerManager();
 
     @EventHandler
     public void onBlockCook(BlockCookEvent event) {
@@ -38,10 +40,10 @@ public class CookingListener implements Listener {
         // Checks that the campfire is currently being used by a player
         if (!cooking.containsKey(event.getBlock().getLocation())) return;
 
-        MCRSPlayer player = PlayerManager.get(cooking.get(event.getBlock().getLocation()).getUniqueId());
+        MCRSPlayer player = playerManager.get(cooking.get(event.getBlock().getLocation()).getUniqueId());
 
         //TODO: Adjust xp based on the item cooked (config)
-        SkillManager.giveExperience(player, SkillType.COOKING, 50);
+        skillManager.giveExperience(player, SkillType.COOKING, 50);
 
         // Scheduler checks if the campfire is empty after a 1 tick delay to ensure BlockState has updated
         Bukkit.getScheduler().runTaskLater(MCRS.getInstance(), () -> {
@@ -133,7 +135,7 @@ public class CookingListener implements Listener {
         }
 
         // TODO: Customize the amount of XP given based on the item crafted (config)
-        SkillManager.giveExperience(PlayerManager.get(bukkitPlayer.getUniqueId()), SkillType.COOKING, 50 * amountCrafted);
+        skillManager.giveExperience(playerManager.get(bukkitPlayer.getUniqueId()), SkillType.COOKING, 50 * amountCrafted);
     }
 
     // Function to handle shift-click crafting

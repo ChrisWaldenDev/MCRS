@@ -1,13 +1,13 @@
 package com.waldxn.MCRS;
 
-import com.waldxn.MCRS.cache.LeaderboardCache;
 import com.waldxn.MCRS.command.MCRSCommandManager;
+import com.waldxn.MCRS.common.cache.LeaderboardCache;
+import com.waldxn.MCRS.common.util.LogUtil;
 import com.waldxn.MCRS.listener.*;
 import com.waldxn.MCRS.player.MCRSPlayer;
 import com.waldxn.MCRS.player.PlayerDataDAO;
 import com.waldxn.MCRS.player.PlayerManager;
 import com.waldxn.MCRS.skill.manager.DatabaseManager;
-import com.waldxn.MCRS.util.LogUtil;
 import org.bukkit.Bukkit;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -15,32 +15,42 @@ import org.bukkit.plugin.java.JavaPlugin;
 public final class MCRS extends JavaPlugin {
 
     PluginManager pm;
+    private static ServiceRegistry serviceRegistry;
+    private DatabaseManager databaseManager;
+    private PlayerDataDAO playerDataDAO;
+    private PlayerManager playerManager;
+    private LeaderboardCache leaderboardCache;
 
     @Override
     public void onEnable() {
         // Plugin startup logic
-        DatabaseManager.connect();
+        serviceRegistry = new ServiceRegistry();
+        databaseManager = serviceRegistry.getDatabaseManager();
+        playerDataDAO = serviceRegistry.getPlayerDataDAO();
+        playerManager = serviceRegistry.getPlayerManager();
+        leaderboardCache = serviceRegistry.getLeaderboardCache();
 
+        databaseManager.connect();
         pm = getServer().getPluginManager();
         registerEvents();
         MCRSCommandManager.registerCommands(this);
 
-        LeaderboardCache.refresh();
+        leaderboardCache.refresh();
         schedulePlayerSync();
     }
 
     @Override
     public void onDisable() {
         // Plugin shutdown logic
-        for (MCRSPlayer player : PlayerManager.getPlayers()) {
+        for (MCRSPlayer player : playerManager.getPlayers()) {
             try {
-                PlayerDataDAO.savePlayerSkills(player);
+                playerDataDAO.savePlayerSkills(player);
             } catch (Exception e) {
                 LogUtil.severe("Failed to save data for " + player.getName() + ": " + e.getMessage());
             }
         }
 
-        if (DatabaseManager.isConnected()) DatabaseManager.close();
+        if (databaseManager.isConnected()) databaseManager.close();
     }
 
     private void registerEvents() {
@@ -63,18 +73,22 @@ public final class MCRS extends JavaPlugin {
         return getPlugin(MCRS.class);
     }
 
+    public static ServiceRegistry getServiceRegistry() {
+        return serviceRegistry;
+    }
+
     private void schedulePlayerSync() {
         long intervalTicks = 20L * 60 * 5; // 5 minutes in ticks (20 ticks = 1 second)
 
-        if (!DatabaseManager.isConnected()) return;
+        if (!databaseManager.isConnected()) return;
 
         Bukkit.getScheduler().runTaskTimerAsynchronously(this, () -> {
             int playerCount = 0;
 
             try {
-                for (MCRSPlayer player : PlayerManager.getPlayers()) {
+                for (MCRSPlayer player : playerManager.getPlayers()) {
                     if (player.isDirty()) {
-                        PlayerDataDAO.savePlayerSkills(player);
+                        playerDataDAO.savePlayerSkills(player);
                         player.clearDirty();
                         playerCount++;
                     }
@@ -82,7 +96,7 @@ public final class MCRS extends JavaPlugin {
                 if (playerCount > 0) {
                     LogUtil.info("Auto-saved " + playerCount + " player(s) skills.");
 
-                    LeaderboardCache.refresh();
+                    leaderboardCache.refresh();
                     LogUtil.info("Leaderboard cache refreshed.");
                 }
             } catch (Exception e) {

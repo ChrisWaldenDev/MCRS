@@ -1,5 +1,6 @@
 package com.waldxn.MCRS.listener;
 
+import com.waldxn.MCRS.MCRS;
 import com.waldxn.MCRS.player.PlayerManager;
 import com.waldxn.MCRS.skill.core.SkillType;
 import com.waldxn.MCRS.skill.manager.SkillManager;
@@ -12,9 +13,12 @@ import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.player.PlayerHarvestBlockEvent;
 import org.bukkit.inventory.ItemStack;
 
-import static com.waldxn.MCRS.util.MaterialGroups.*;
+import static com.waldxn.MCRS.common.util.MaterialGroups.*;
 
 public class FarmingListener implements Listener {
+
+    private final SkillManager skillManager = MCRS.getServiceRegistry().getSkillManager();
+    private final PlayerManager playerManager = MCRS.getServiceRegistry().getPlayerManager();
 
     @EventHandler
     public void onFarm(BlockBreakEvent event) {
@@ -27,7 +31,7 @@ public class FarmingListener implements Listener {
 
         if (crop.getAge() < crop.getMaximumAge()) return;
 
-        SkillManager.giveExperience(PlayerManager.get(event.getPlayer().getUniqueId()), SkillType.FARMING, 50);
+        skillManager.giveExperience(playerManager.get(event.getPlayer().getUniqueId()), SkillType.FARMING, 50);
     }
 
     @EventHandler
@@ -38,7 +42,7 @@ public class FarmingListener implements Listener {
 
         int amountHarvested = countGrowthStack(event.getBlock());
 
-        SkillManager.giveExperience(PlayerManager.get(event.getPlayer().getUniqueId()), SkillType.FARMING, 50 * amountHarvested);
+        skillManager.giveExperience(playerManager.get(event.getPlayer().getUniqueId()), SkillType.FARMING, 50 * amountHarvested);
     }
 
     @EventHandler
@@ -53,7 +57,7 @@ public class FarmingListener implements Listener {
         }
 
         // TODO: Customize amount of exp for all events
-        SkillManager.giveExperience(PlayerManager.get(event.getPlayer().getUniqueId()), SkillType.FARMING, 50 * amountHarvested);
+        skillManager.giveExperience(playerManager.get(event.getPlayer().getUniqueId()), SkillType.FARMING, 50 * amountHarvested);
     }
 
     private int countGrowthStack(Block crop) {

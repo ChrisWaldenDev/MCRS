@@ -1,9 +1,9 @@
 package com.waldxn.MCRS.skill.manager;
 
 import com.waldxn.MCRS.MCRS;
+import com.waldxn.MCRS.common.util.TextUtil;
 import com.waldxn.MCRS.skill.core.ExperienceUtil;
 import com.waldxn.MCRS.skill.core.SkillType;
-import com.waldxn.MCRS.util.TextUtil;
 import net.kyori.adventure.bossbar.BossBar;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
@@ -24,7 +24,7 @@ public class BossBarManager {
 
     private static final MCRS mcrs = MCRS.getInstance();
 
-    public static void showXPBar(Player bukkitPlayer, SkillType skillType, double currentXP, double amountGained) {
+    public void showXPBar(Player bukkitPlayer, SkillType skillType, double currentXP, double amountGained) {
 
         if (skillType == SkillType.HITPOINTS)
             return; // Hides the hitpoints skill bar to avoid overlap with other combat skills

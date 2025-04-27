@@ -1,9 +1,9 @@
 package com.waldxn.MCRS.player;
 
+import com.waldxn.MCRS.common.util.LogUtil;
 import com.waldxn.MCRS.skill.core.Skill;
 import com.waldxn.MCRS.skill.core.SkillFactory;
 import com.waldxn.MCRS.skill.core.SkillType;
-import com.waldxn.MCRS.util.LogUtil;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 

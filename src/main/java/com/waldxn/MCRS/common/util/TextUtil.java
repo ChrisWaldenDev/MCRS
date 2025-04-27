@@ -1,4 +1,4 @@
-package com.waldxn.MCRS.util;
+package com.waldxn.MCRS.common.util;
 
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;

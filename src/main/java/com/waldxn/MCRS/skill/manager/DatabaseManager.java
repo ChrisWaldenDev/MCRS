@@ -1,7 +1,7 @@
 package com.waldxn.MCRS.skill.manager;
 
 import com.waldxn.MCRS.MCRS;
-import com.waldxn.MCRS.util.LogUtil;
+import com.waldxn.MCRS.common.util.LogUtil;
 
 import java.io.File;
 import java.sql.Connection;
@@ -15,7 +15,7 @@ public class DatabaseManager {
     private static final String CREATE_PLAYER_SKILLS_TABLE = "CREATE TABLE IF NOT EXISTS player_skills (" +
             "uuid TEXT, skill TEXT, experience REAL, PRIMARY KEY(uuid, skill))";
 
-    public static void connect() {
+    public void connect() {
 
         try {
             File folder = MCRS.getInstance().getDataFolder();
@@ -41,11 +41,11 @@ public class DatabaseManager {
         }
     }
 
-    public static Connection getConnection() {
+    public Connection getConnection() {
         return connection;
     }
 
-    public static void close() {
+    public void close() {
         try {
             if (connection != null && !connection.isClosed()) {
                 connection.close();
@@ -55,7 +55,7 @@ public class DatabaseManager {
         }
     }
 
-    public static boolean isConnected() {
+    public boolean isConnected() {
         try {
             return connection != null && !connection.isClosed();
         } catch (SQLException e) {
