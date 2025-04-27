@@ -1,6 +1,5 @@
 package com.waldxn.MCRS.listener;
 
-import com.waldxn.MCRS.MCRS;
 import com.waldxn.MCRS.player.PlayerManager;
 import com.waldxn.MCRS.skill.core.SkillType;
 import com.waldxn.MCRS.skill.manager.SkillManager;
@@ -19,8 +18,13 @@ import java.util.UUID;
 public class MeleeListener implements Listener {
 
     private final Map<UUID, Long> lastXP = new HashMap<>();
-    private final SkillManager skillManager = MCRS.getServiceRegistry().getSkillManager();
-    private final PlayerManager playerManager = MCRS.getServiceRegistry().getPlayerManager();
+    private final SkillManager skillManager;
+    private final PlayerManager playerManager;
+
+    public MeleeListener(SkillManager skillManager, PlayerManager playerManager) {
+        this.skillManager = skillManager;
+        this.playerManager = playerManager;
+    }
 
     @EventHandler
     public void onMelee(EntityDamageByEntityEvent event) {

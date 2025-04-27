@@ -29,8 +29,13 @@ import static com.waldxn.MCRS.common.util.MaterialGroups.CRAFTABLE_FOOD;
 public class CookingListener implements Listener {
 
     private final HashMap<Location, Player> cooking = new HashMap<>();
-    private final SkillManager skillManager = MCRS.getServiceRegistry().getSkillManager();
-    private final PlayerManager playerManager = MCRS.getServiceRegistry().getPlayerManager();
+    private final SkillManager skillManager;
+    private final PlayerManager playerManager;
+
+    public CookingListener(SkillManager skillManager, PlayerManager playerManager) {
+        this.skillManager = skillManager;
+        this.playerManager = playerManager;
+    }
 
     @EventHandler
     public void onBlockCook(BlockCookEvent event) {

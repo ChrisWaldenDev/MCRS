@@ -1,6 +1,5 @@
 package com.waldxn.MCRS.listener;
 
-import com.waldxn.MCRS.MCRS;
 import com.waldxn.MCRS.player.PlayerManager;
 import com.waldxn.MCRS.skill.core.SkillType;
 import com.waldxn.MCRS.skill.manager.SkillManager;
@@ -19,8 +18,13 @@ import static com.waldxn.MCRS.common.util.MaterialGroups.STACKED_FARMABLE_BLOCKS
 public class ConstructionListener implements Listener {
 
     private final Map<UUID, Long> lastXP = new HashMap<>();
-    private final SkillManager skillManager = MCRS.getServiceRegistry().getSkillManager();
-    private final PlayerManager playerManager = MCRS.getServiceRegistry().getPlayerManager();
+    private final SkillManager skillManager;
+    private final PlayerManager playerManager;
+
+    public ConstructionListener(SkillManager skillManager, PlayerManager playerManager) {
+        this.skillManager = skillManager;
+        this.playerManager = playerManager;
+    }
 
     @EventHandler
     public void onPlayerBuild(BlockPlaceEvent event) {

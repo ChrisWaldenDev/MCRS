@@ -15,8 +15,13 @@ import java.util.UUID;
 
 public class PlayerListener implements Listener {
 
-    private final PlayerDataDAO playerDataDAO = MCRS.getServiceRegistry().getPlayerDataDAO();
-    private final PlayerManager playerManager = MCRS.getServiceRegistry().getPlayerManager();
+    private final PlayerDataDAO playerDataDAO;
+    private final PlayerManager playerManager;
+
+    public PlayerListener(PlayerDataDAO playerDataDAO, PlayerManager playerManager) {
+        this.playerDataDAO = playerDataDAO;
+        this.playerManager = playerManager;
+    }
 
     @EventHandler
     public void onPlayerJoin(PlayerJoinEvent event) {

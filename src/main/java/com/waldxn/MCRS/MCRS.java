@@ -8,18 +8,21 @@ import com.waldxn.MCRS.player.MCRSPlayer;
 import com.waldxn.MCRS.player.PlayerDataDAO;
 import com.waldxn.MCRS.player.PlayerManager;
 import com.waldxn.MCRS.skill.manager.DatabaseManager;
+import com.waldxn.MCRS.skill.manager.SkillManager;
 import org.bukkit.Bukkit;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
 
 public final class MCRS extends JavaPlugin {
 
-    PluginManager pm;
+    private PluginManager pm;
+
     private static ServiceRegistry serviceRegistry;
     private DatabaseManager databaseManager;
     private PlayerDataDAO playerDataDAO;
     private PlayerManager playerManager;
     private LeaderboardCache leaderboardCache;
+    private SkillManager skillManager;
 
     @Override
     public void onEnable() {
@@ -29,6 +32,7 @@ public final class MCRS extends JavaPlugin {
         playerDataDAO = serviceRegistry.getPlayerDataDAO();
         playerManager = serviceRegistry.getPlayerManager();
         leaderboardCache = serviceRegistry.getLeaderboardCache();
+        skillManager = serviceRegistry.getSkillManager();
 
         databaseManager.connect();
         pm = getServer().getPluginManager();
@@ -55,18 +59,18 @@ public final class MCRS extends JavaPlugin {
 
     private void registerEvents() {
         // Core Listeners
-        pm.registerEvents(new PlayerListener(), this);
+        pm.registerEvents(new PlayerListener(playerDataDAO, playerManager), this);
         pm.registerEvents(new GuiClickListener(), this);
         // Skill Listeners
-        pm.registerEvents(new AgilityListener(), this);
-        pm.registerEvents(new MeleeListener(), this);
-        pm.registerEvents(new RangedListener(), this);
-        pm.registerEvents(new ConstructionListener(), this);
-        pm.registerEvents(new CookingListener(), this);
-        pm.registerEvents(new CraftingListener(), this);
-        pm.registerEvents(new FarmingListener(), this);
-        pm.registerEvents(new FishingListener(), this);
-        pm.registerEvents(new FletchingListener(), this);
+        pm.registerEvents(new AgilityListener(skillManager, playerManager), this);
+        pm.registerEvents(new MeleeListener(skillManager, playerManager), this);
+        pm.registerEvents(new RangedListener(skillManager, playerManager), this);
+        pm.registerEvents(new ConstructionListener(skillManager, playerManager), this);
+        pm.registerEvents(new CookingListener(skillManager, playerManager), this);
+        pm.registerEvents(new CraftingListener(skillManager, playerManager), this);
+        pm.registerEvents(new FarmingListener(skillManager, playerManager), this);
+        pm.registerEvents(new FishingListener(skillManager, playerManager), this);
+        pm.registerEvents(new FletchingListener(skillManager, playerManager), this);
     }
 
     public static MCRS getInstance() {
