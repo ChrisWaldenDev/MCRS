@@ -1,6 +1,7 @@
 package com.waldxn.MCRS.skill.core;
 
-import com.waldxn.MCRS.util.ChatUtil;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.NamedTextColor;
 
 import java.text.DecimalFormat;
 import java.util.List;
@@ -45,7 +46,7 @@ public abstract class Skill {
         return leveledUp;
     }
 
-    public List<String> getHoverInfo() {
+    public List<Component> getHoverInfo() {
         int level = getLevel();
         double experience = getExperience();
         double nextLevelExperience = ExperienceUtil.getXPForLevel(level + 1);
@@ -58,14 +59,22 @@ public abstract class Skill {
 
         if (level == 99) {
             return List.of(
-                    ChatUtil.color("&6Level: " + level),
-                    ChatUtil.color("&eXP: " + (int) experience)
+                    Component.text()
+                            .append(Component.text("Level: " + level, NamedTextColor.GOLD))
+                            .build(),
+                    Component.text()
+                            .append(Component.text("XP: " + (int) experience, NamedTextColor.YELLOW))
+                            .build()
             );
         }
 
         return List.of(
-                ChatUtil.color("&6Level: " + level),
-                ChatUtil.color("&eXP: " + current + " / " + needed)
+                Component.text()
+                        .append(Component.text("Level: " + level, NamedTextColor.GOLD))
+                        .build(),
+                Component.text()
+                        .append(Component.text("XP: " + current + " / " + needed, NamedTextColor.YELLOW))
+                        .build()
         );
     }
 

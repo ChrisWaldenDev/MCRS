@@ -5,7 +5,8 @@ import com.waldxn.MCRS.player.MCRSPlayer;
 import com.waldxn.MCRS.player.PlayerManager;
 import com.waldxn.MCRS.skill.core.SkillType;
 import com.waldxn.MCRS.skill.manager.SkillManager;
-import com.waldxn.MCRS.util.ChatUtil;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -90,21 +91,22 @@ public class CookingListener implements Listener {
 
         if (isFull) {
             event.setCancelled(true);
-            player.sendMessage(ChatUtil.color("&4The campfire is full!"));
+            player.sendMessage(Component.text("The campfire is full!", NamedTextColor.DARK_RED));
             return;
         }
 
         // Checks if another player is using the campfire
         if (cooking.containsKey(location) && cooking.get(location) != player) {
             event.setCancelled(true);
-            player.sendMessage(ChatUtil.color("&6" + player + "&4 is already cooking there!"));
+            player.sendMessage(Component.text(player.getName(), NamedTextColor.GOLD)
+                    .append(Component.text(" is already cooking there!", NamedTextColor.DARK_RED)));
             return;
         }
 
         // Checks if the player is using cookable food
         if (!COOKABLE_FOOD.contains(itemStack.getType())) {
             event.setCancelled(true);
-            player.sendMessage(ChatUtil.color("&4You cannot cook that!"));
+            player.sendMessage(Component.text("You cannot cook that!", NamedTextColor.DARK_RED));
             return;
         }
 

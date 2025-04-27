@@ -1,40 +1,71 @@
 package com.waldxn.MCRS.command;
 
+import com.mojang.brigadier.arguments.StringArgumentType;
+import com.mojang.brigadier.builder.LiteralArgumentBuilder;
+import com.mojang.brigadier.context.CommandContext;
 import com.waldxn.MCRS.player.MCRSPlayer;
 import com.waldxn.MCRS.player.PlayerDataDAO;
 import com.waldxn.MCRS.player.PlayerManager;
 import com.waldxn.MCRS.skill.manager.DatabaseManager;
-import com.waldxn.MCRS.util.ChatUtil;
 import com.waldxn.MCRS.util.LogUtil;
-import org.bukkit.command.Command;
-import org.bukkit.command.CommandExecutor;
+import com.waldxn.MCRS.util.Permissions;
+import io.papermc.paper.command.brigadier.CommandSourceStack;
+import io.papermc.paper.command.brigadier.Commands;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.command.CommandSender;
 
-public class SaveAllCommand implements CommandExecutor {
+@SuppressWarnings("UnstableApiUsage")
+public class SaveAllCommand implements Subcommand {
 
-    @SuppressWarnings("NullableProblems")
     @Override
-    public boolean onCommand(CommandSender commandSender, Command command, String s, String[] strings) {
+    public LiteralArgumentBuilder<CommandSourceStack> build() {
+        return Commands.literal("saveall")
+                .requires(sender -> sender.getSender().hasPermission(Permissions.ADMIN_SAVE_ALL))
+                .executes(context -> {
+                    savePlayerSkills(context, false);
+                    return 1;
+                })
+                .then(
+                        Commands.argument("force", StringArgumentType.word())
+                                .suggests((context, builder) -> {
+                                    builder.suggest("force");
+                                    return builder.buildFuture();
+                                })
+                                .executes(context -> {
+                                    String force = StringArgumentType.getString(context, "force");
 
-        if (!commandSender.hasPermission("mcrs.admin.saveall")) {
-            commandSender.sendMessage(ChatUtil.color("&4You do not have permission to use this command."));
-            return true;
-        }
+                                    if (force.equalsIgnoreCase("force")) {
+                                        savePlayerSkills(context, true);
+                                        return 1;
+                                    } else {
+                                        context.getSource().getSender().sendMessage(
+                                                Component.text("Invalid argument. Use 'force' to save all players.", NamedTextColor.DARK_RED)
+                                        );
+                                    }
+                                    return 0;
+                                })
+                );
+    }
 
+    private void savePlayerSkills(CommandContext<CommandSourceStack> context, boolean force) {
+        CommandSender commandSender = context.getSource().getSender();
         if (!DatabaseManager.isConnected()) {
-            commandSender.sendMessage(ChatUtil.color("&4You are not connected to the database."));
-            return true;
+            commandSender.sendMessage(Component.text("You are not connected to the database.", NamedTextColor.DARK_RED));
+            return;
         }
-
-        boolean force = strings.length > 0 && strings[0].equalsIgnoreCase("--force");
 
         for (MCRSPlayer player : PlayerManager.getPlayers()) {
             if (force || player.isDirty()) PlayerDataDAO.savePlayerSkills(player);
         }
 
-        commandSender.sendMessage(ChatUtil.color("&aAll players have been saved."));
-        LogUtil.info("/saveall triggered - all player data saved.");
+        if (force) {
+            commandSender.sendMessage(Component.text("All players have been saved. (Forced)", NamedTextColor.GREEN));
+            LogUtil.info("/saveall triggered - all player data saved. (forced)");
+            return;
+        }
 
-        return true;
+        commandSender.sendMessage(Component.text("All players have been saved.", NamedTextColor.GREEN));
+        LogUtil.info("/saveall triggered - all player data saved.");
     }
 }

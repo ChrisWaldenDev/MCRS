@@ -25,7 +25,6 @@ public class PlayerListener implements Listener {
             MCRSPlayer loaded = PlayerDataDAO.loadPlayerFromSQL(uuid);
             Bukkit.getScheduler().runTask(MCRS.getInstance(), () -> PlayerManager.put(loaded));
         });
-
     }
 
     @EventHandler

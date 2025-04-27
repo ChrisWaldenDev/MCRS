@@ -4,7 +4,9 @@ import com.waldxn.MCRS.cache.LeaderboardCache;
 import com.waldxn.MCRS.player.MCRSPlayer;
 import com.waldxn.MCRS.skill.core.Skill;
 import com.waldxn.MCRS.skill.core.SkillType;
-import com.waldxn.MCRS.util.ChatUtil;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.NamedTextColor;
+import net.kyori.adventure.text.format.TextDecoration;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.inventory.Inventory;
@@ -27,7 +29,9 @@ public class LeaderboardGui {
         int maxEntries = 25;
         int totalSlots = 27;
 
-        String title = (skillType == null) ? ChatUtil.color("&lTotal Level Leaderboard") : ChatUtil.color("&l" + skillType.getName() + " Leaderboard");
+        Component title = (skillType == null)
+                ? Component.text("Total Level Leaderboard", NamedTextColor.DARK_GRAY, TextDecoration.BOLD)
+                : Component.text(skillType.getName() + " Leaderboard", NamedTextColor.DARK_GRAY, TextDecoration.BOLD);
 
         Inventory gui = Bukkit.createInventory(null, 27, title);
 
@@ -38,7 +42,7 @@ public class LeaderboardGui {
         }
 
         if (leaderboard.size() < totalSlots) {
-            gui.setItem(totalSlots - 1, createLeaderboardItem(player,0, skillType));
+            gui.setItem(totalSlots - 1, createLeaderboardItem(player, 0, skillType));
         }
         player.getBukkitPlayer().openInventory(gui);
     }
@@ -47,23 +51,24 @@ public class LeaderboardGui {
         ItemStack skull = new ItemStack(Material.PLAYER_HEAD);
         SkullMeta meta = (SkullMeta) skull.getItemMeta();
 
-        String rankDisplay = rank > 0 ? "&f#" + rank + " " : "&7";
-        meta.setDisplayName(ChatUtil.color(rankDisplay + "&a" + player.getName()));
+        String rankDisplay = rank > 0 ? "#" + rank + " " : "";
+        meta.displayName(Component.text(rankDisplay, NamedTextColor.WHITE)
+                .append(Component.text(player.getName(), NamedTextColor.GREEN)));
 
-        List<String> lore = new java.util.ArrayList<>();
+        List<Component> lore = new java.util.ArrayList<>();
 
         DecimalFormat formatter = new DecimalFormat("#,###");
         String currentXP = formatter.format((int) (skillType != null
                 ? player.getSkill(skillType).getExperience()
                 : getTotalXP(player)));
 
-        lore.add(ChatUtil.color("&6Level: " + (skillType != null
+        lore.add(Component.text("Level " + (skillType != null
                 ? player.getSkill(skillType).getLevel()
-                : getTotalLevel(player))));
+                : getTotalLevel(player)), NamedTextColor.GOLD));
 
-        lore.add(ChatUtil.color("&eXP: " + currentXP));
+        lore.add(Component.text("XP: " + currentXP, NamedTextColor.YELLOW));
 
-        meta.setLore(lore);
+        meta.lore(lore);
         meta.setOwningPlayer(Bukkit.getOfflinePlayer(player.getUUID()));
         skull.setItemMeta(meta);
         return skull;
