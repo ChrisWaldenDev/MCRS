@@ -1,6 +1,6 @@
 package com.waldxn.MCRS.listener;
 
-import org.bukkit.ChatColor;
+import net.kyori.adventure.text.serializer.plain.PlainTextComponentSerializer;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -14,9 +14,9 @@ public class GuiClickListener implements Listener {
 
     @EventHandler
     public void onInventoryClick(InventoryClickEvent event) {
-        if (!(event.getWhoClicked() instanceof Player player)) return;
+        if (!(event.getWhoClicked() instanceof Player)) return;
 
-        String title = ChatColor.stripColor(event.getView().getTitle());
+        String title = PlainTextComponentSerializer.plainText().serialize(event.getView().title());
         if (!title.contains("Total Level")) return;
 
         Inventory top = event.getView().getTopInventory();
@@ -43,7 +43,7 @@ public class GuiClickListener implements Listener {
     public void onInventoryDrag(InventoryDragEvent event) {
         if (!(event.getWhoClicked() instanceof Player)) return;
 
-        String title = ChatColor.stripColor(event.getView().getTitle());
+        String title = PlainTextComponentSerializer.plainText().serialize(event.getView().title());
         if (!title.contains("Total Level")) return;
 
         // Block all drag events
