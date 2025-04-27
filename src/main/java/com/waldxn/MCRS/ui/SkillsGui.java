@@ -3,19 +3,23 @@ package com.waldxn.MCRS.ui;
 import com.waldxn.MCRS.player.MCRSPlayer;
 import com.waldxn.MCRS.skill.core.Skill;
 import com.waldxn.MCRS.skill.core.SkillType;
-import com.waldxn.MCRS.util.ChatUtil;
+import com.waldxn.MCRS.util.TextUtil;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.NamedTextColor;
+import net.kyori.adventure.text.format.TextDecoration;
 import org.bukkit.Bukkit;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
-public class StatsGui {
+public class SkillsGui {
 
     public static void open(MCRSPlayer viewer, MCRSPlayer target) {
 
         int totalLevel = calculateTotalLevel(target);
+        Component title = TextUtil.translate("&l" + target.getName() + "'s Total Level: &2&l" + totalLevel);
 
-        Inventory gui = Bukkit.createInventory(null, 27, ChatUtil.color("&l" + target.getName() + "'s Total Level: &2&l" + totalLevel));
+        Inventory gui = Bukkit.createInventory(null, 27, title);
 
         int slot = 0;
         for (SkillType type : SkillType.values()) {
@@ -29,10 +33,6 @@ public class StatsGui {
         viewer.getBukkitPlayer().openInventory(gui);
     }
 
-    public static void open(MCRSPlayer player) {
-        open(player, player);
-    }
-
     private static int calculateTotalLevel(MCRSPlayer player) {
         int totalLevel = 0;
         for (Skill skill : player.getSkills().values()) {
@@ -44,8 +44,8 @@ public class StatsGui {
     private static ItemStack createSkillItem(SkillType type, Skill skill) {
         ItemStack item = new ItemStack(type.getIcon());
         ItemMeta meta = item.getItemMeta();
-        meta.setDisplayName(type.getName());
-        meta.setLore(skill.getHoverInfo());
+        meta.displayName(Component.text(type.getName(), NamedTextColor.WHITE, TextDecoration.BOLD));
+        meta.lore(skill.getHoverInfo());
         item.setItemMeta(meta);
         return item;
     }

@@ -22,7 +22,8 @@ public class ConstructionListener implements Listener {
     @EventHandler
     public void onPlayerBuild(BlockPlaceEvent event) {
         // Doesn't give XP for placing farmable blocks
-        if (FARMABLE_BLOCKS.contains(event.getBlock().getType()) || STACKED_FARMABLE_BLOCKS.contains(event.getBlock().getType())) return;
+        if (FARMABLE_BLOCKS.contains(event.getBlock().getType()) || STACKED_FARMABLE_BLOCKS.contains(event.getBlock().getType()))
+            return;
 
         UUID uuid = event.getPlayer().getUniqueId();
         long now = System.currentTimeMillis();

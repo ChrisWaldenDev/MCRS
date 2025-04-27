@@ -1,7 +1,7 @@
 package com.waldxn.MCRS;
 
 import com.waldxn.MCRS.cache.LeaderboardCache;
-import com.waldxn.MCRS.command.*;
+import com.waldxn.MCRS.command.MCRSCommandManager;
 import com.waldxn.MCRS.listener.*;
 import com.waldxn.MCRS.player.MCRSPlayer;
 import com.waldxn.MCRS.player.PlayerDataDAO;
@@ -23,7 +23,7 @@ public final class MCRS extends JavaPlugin {
 
         pm = getServer().getPluginManager();
         registerEvents();
-        registerCommands();
+        MCRSCommandManager.registerCommands(this);
 
         LeaderboardCache.refresh();
         schedulePlayerSync();
@@ -58,18 +58,6 @@ public final class MCRS extends JavaPlugin {
         pm.registerEvents(new FishingListener(), this);
     }
 
-    private void registerCommands() {
-        SetSkillCommand setSkillCommand = new SetSkillCommand();
-        LeaderboardCommand leaderboardCommand = new LeaderboardCommand();
-        getCommand("skills").setExecutor(new SkillsCommand());
-        getCommand("saveall").setExecutor(new SaveAllCommand());
-        getCommand("setskill").setExecutor(setSkillCommand);
-        getCommand("setskill").setTabCompleter(setSkillCommand);
-        getCommand("wipeskills").setExecutor(new WipeSkillsCommand());
-        getCommand("leaderboard").setExecutor(leaderboardCommand);
-        getCommand("leaderboard").setTabCompleter(leaderboardCommand);
-    }
-
     public static MCRS getInstance() {
         return getPlugin(MCRS.class);
     }
@@ -99,6 +87,6 @@ public final class MCRS extends JavaPlugin {
             } catch (Exception e) {
                 LogUtil.severe("Auto-save failed: " + e.getMessage());
             }
-        },intervalTicks, intervalTicks);
+        }, intervalTicks, intervalTicks);
     }
 }

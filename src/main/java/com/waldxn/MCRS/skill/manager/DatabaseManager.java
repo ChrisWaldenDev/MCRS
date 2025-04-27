@@ -23,7 +23,7 @@ public class DatabaseManager {
             if (!folder.exists()) {
                 boolean created = folder.mkdirs();
                 if (!created) {
-                    LogUtil.severe( "Couldn't create folder " + folder.getAbsolutePath());
+                    LogUtil.severe("Couldn't create folder " + folder.getAbsolutePath());
                 }
             }
 

@@ -20,7 +20,8 @@ public class FarmingListener implements Listener {
     public void onFarm(BlockBreakEvent event) {
         if (!(FARMABLE_BLOCKS.contains(event.getBlock().getType()))) return;
 
-        if (event.getBlock().getType() == Material.MELON_STEM || event.getBlock().getType() == Material.PUMPKIN_STEM) return;
+        if (event.getBlock().getType() == Material.MELON_STEM || event.getBlock().getType() == Material.PUMPKIN_STEM)
+            return;
 
         if (!(event.getBlock().getBlockData() instanceof Ageable crop)) return;
 
@@ -62,11 +63,11 @@ public class FarmingListener implements Listener {
         if (!STACKED_FARMABLE_BLOCKS.contains(crop.getRelative(0, -1, 0).getType())) return 0;
 
         int count = 1;
-        Block above = crop.getRelative(0,1,0);
+        Block above = crop.getRelative(0, 1, 0);
 
         while (STACKED_FARMABLE_BLOCKS.contains(above.getType())) {
             count++;
-            above = above.getRelative(0,1,0);
+            above = above.getRelative(0, 1, 0);
         }
 
         return count;

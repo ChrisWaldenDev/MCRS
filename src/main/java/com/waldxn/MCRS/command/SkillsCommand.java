@@ -1,47 +1,73 @@
 package com.waldxn.MCRS.command;
 
+import com.mojang.brigadier.builder.LiteralArgumentBuilder;
+import com.mojang.brigadier.context.CommandContext;
+import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import com.waldxn.MCRS.player.MCRSPlayer;
 import com.waldxn.MCRS.player.PlayerManager;
-import com.waldxn.MCRS.ui.StatsGui;
-import org.bukkit.Bukkit;
-import org.bukkit.OfflinePlayer;
-import org.bukkit.command.Command;
-import org.bukkit.command.CommandExecutor;
+import com.waldxn.MCRS.ui.SkillsGui;
+import com.waldxn.MCRS.util.Permissions;
+import io.papermc.paper.command.brigadier.CommandSourceStack;
+import io.papermc.paper.command.brigadier.Commands;
+import io.papermc.paper.command.brigadier.argument.ArgumentTypes;
+import io.papermc.paper.command.brigadier.argument.resolvers.selector.PlayerSelectorArgumentResolver;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
-import java.util.UUID;
+@SuppressWarnings("UnstableApiUsage")
+public class SkillsCommand implements Subcommand {
 
-public class SkillsCommand implements CommandExecutor {
-
-    @SuppressWarnings("NullableProblems")
     @Override
-    public boolean onCommand(CommandSender commandSender, Command command, String s, String[] strings) {
+    public LiteralArgumentBuilder<CommandSourceStack> build() {
+        return Commands.literal("skills")
+                .requires(sender -> sender.getSender().hasPermission(Permissions.PLAYER_SKILLS))
+                .executes(this::showSkills)
+                .then(
+                        Commands.argument("player", ArgumentTypes.player())
+                                .suggests((context, builder) -> {
+                                    for (MCRSPlayer player : PlayerManager.getPlayers()) {
+                                        String name = player.getName();
+                                        if (name.toLowerCase().startsWith(builder.getRemainingLowerCase()))
+                                            builder.suggest(name);
+                                    }
+                                    return builder.buildFuture();
+                                })
+                                .executes(this::showSkills)
+                );
+    }
 
-        if (!(commandSender instanceof Player player)) {
-            commandSender.sendMessage("This command can only be executed by a player");
-            return true;
+    private int showSkills(CommandContext<CommandSourceStack> context) {
+        final CommandSender sender = context.getSource().getSender();
+        if (!(sender instanceof Player viewer)) {
+            sender.sendMessage("You must be a player to use this command.");
+            return 0;
         }
 
-        if (strings.length > 1) return false;
+        MCRSPlayer target;
 
-        if (strings.length == 0) {
-            StatsGui.open(PlayerManager.get(player.getUniqueId()));
-            return true;
+        if (context.getNodes().stream().anyMatch(node -> node.getNode().getName().equals("player"))) {
+            // Player argument is present
+            try {
+                PlayerSelectorArgumentResolver resolver = context.getArgument("player", PlayerSelectorArgumentResolver.class);
+                Player resolvedPlayer = resolver.resolve(context.getSource()).getFirst();
+                if (resolvedPlayer == null) {
+                    viewer.sendMessage(Component.text("Player not found", NamedTextColor.DARK_RED));
+                    return 0;
+                }
+
+                target = PlayerManager.getOrLoad(resolvedPlayer.getUniqueId());
+            } catch (CommandSyntaxException e) {
+                viewer.sendMessage(Component.text("Invalid player selector", NamedTextColor.DARK_RED));
+                return 0;
+            }
+        } else {
+            target = PlayerManager.get(viewer.getUniqueId());
         }
 
-        OfflinePlayer bukkitPlayer = Bukkit.getOfflinePlayer(strings[0]);
+        SkillsGui.open(PlayerManager.get(viewer.getUniqueId()), target);
+        return 1;
 
-        if (!bukkitPlayer.hasPlayedBefore()) {
-            commandSender.sendMessage("Player not found");
-            return true;
-        }
-
-        UUID uuid = bukkitPlayer.getUniqueId();
-        MCRSPlayer target = PlayerManager.getOrLoad(uuid);
-        MCRSPlayer viewer = PlayerManager.get(player.getUniqueId());
-
-        StatsGui.open(viewer, target);
-        return true;
     }
 }

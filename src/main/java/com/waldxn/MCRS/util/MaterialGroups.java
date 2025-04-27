@@ -19,7 +19,7 @@ public class MaterialGroups {
             Material.PUMPKIN
     );
 
-    public static final Set<Material> HARVESTABLE_BLOCKS = EnumSet.of (
+    public static final Set<Material> HARVESTABLE_BLOCKS = EnumSet.of(
             Material.SWEET_BERRY_BUSH
     );
 

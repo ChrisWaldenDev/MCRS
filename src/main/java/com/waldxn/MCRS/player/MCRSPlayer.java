@@ -5,6 +5,7 @@ import com.waldxn.MCRS.skill.core.SkillFactory;
 import com.waldxn.MCRS.skill.core.SkillType;
 import com.waldxn.MCRS.util.LogUtil;
 import org.bukkit.Bukkit;
+import org.bukkit.entity.Player;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -44,7 +45,7 @@ public class MCRSPlayer {
             if (entry.getKey() != null && entry.getValue() != null) {
                 skills.put(entry.getKey(), entry.getValue());
             } else {
-                LogUtil.warning( "Invalid skill entry in setSkills() for " + uuid);
+                LogUtil.warning("Invalid skill entry in setSkills() for " + uuid);
             }
         }
     }
@@ -83,7 +84,7 @@ public class MCRSPlayer {
         return dirty;
     }
 
-    public org.bukkit.entity.Player getBukkitPlayer() {
+    public Player getBukkitPlayer() {
         return Bukkit.getPlayer(uuid);
     }
 
