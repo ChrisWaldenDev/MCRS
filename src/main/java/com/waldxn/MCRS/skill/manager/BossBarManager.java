@@ -51,6 +51,12 @@ public class BossBarManager {
                 .append(Component.text(currentLevel))
                 .build();
 
+        Component gainTitle = Component.text()
+                .append(Component.text("+" + (int) amountGained + " XP", NamedTextColor.GREEN))
+                .append(Component.text(" → ", NamedTextColor.WHITE))
+                .append(title)
+                .build();
+
         BossBar bar = activeBossBars.get(uuid);
 
         if (bar == null) {
@@ -65,12 +71,6 @@ public class BossBarManager {
 
         bukkitPlayer.showBossBar(bar);
         BossBar finalBar = bar;
-
-        Component gainTitle = Component.text()
-                .append(Component.text("+" + (int) amountGained + " XP", NamedTextColor.GREEN))
-                .append(Component.text(" → ", NamedTextColor.WHITE))
-                .append(title)
-                .build();
 
         bar.name(gainTitle);
         bar.progress((float) progress);
